@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FF">
-<meta name="keywords" content="linux,screen capture">
+  <meta name="description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在Linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一、可以熟悉Linux屏幕的捕获方法；第二、如果出现bug（虽然FFmp">
+<meta name="keywords" content="Linux,screen capture">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux Screen Capture">
 <meta property="og:url" content="http://huntto.me/2018/07/08/Linux-Screen-Capture/index.html">
 <meta property="og:site_name" content="且行且记">
-<meta property="og:description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FF">
+<meta property="og:description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在Linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一、可以熟悉Linux屏幕的捕获方法；第二、如果出现bug（虽然FFmp">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-08T11:06:35.064Z">
+<meta property="og:updated_time" content="2018-07-08T14:14:06.972Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Screen Capture">
-<meta name="twitter:description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FF">
+<meta name="twitter:description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在Linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一、可以熟悉Linux屏幕的捕获方法；第二、如果出现bug（虽然FFmp">
 
 
 
@@ -323,7 +323,7 @@
                 
               
 
-              <time title="Created: 2018-07-08 16:50:19 / Modified: 19:06:35" itemprop="dateCreated datePublished" datetime="2018-07-08T16:50:19+08:00">2018-07-08</time>
+              <time title="Created: 2018-07-08 16:50:19 / Modified: 22:14:06" itemprop="dateCreated datePublished" datetime="2018-07-08T16:50:19+08:00">2018-07-08</time>
             
 
             
@@ -379,7 +379,7 @@
       
 
       
-        <p>Linux屏幕捕获最简单的方式就是使用<a href="http://ffmpeg.org/" target="_blank" rel="noopener">FFmpeg</a>，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如<a href="https://github.com/vkohaupt/vokoscreen" target="_blank" rel="noopener">vokoscreen</a>。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FFmpeg出bug的可能性比较小），也便于自己调试和修复。本文主要介绍使用<a href="https://xcb.freedesktop.org/" target="_blank" rel="noopener">xcb</a>实现linux上的屏幕捕获功能。</p>
+        <p>Linux屏幕捕获最简单的方式就是使用<a href="http://ffmpeg.org/" target="_blank" rel="noopener">FFmpeg</a>，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如<a href="https://github.com/vkohaupt/vokoscreen" target="_blank" rel="noopener">vokoscreen</a>。如果需要在Linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一、可以熟悉Linux屏幕的捕获方法；第二、如果出现bug（虽然FFmpeg出bug的可能性比较小），也便于自己调试和修复。本文主要介绍使用<a href="https://xcb.freedesktop.org/" target="_blank" rel="noopener">xcb</a>实现Linux上的屏幕捕获功能。</p>
 <a id="more"></a>
 <hr>
 <blockquote>
@@ -389,7 +389,7 @@
 <h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>X协议的窗口系统是基于网络的，存在一个服务端X-server，而我们就是客户端。<br>客户端在进行一系列操作之前需要先与服务端建立连接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* Open the connection to the X server */</span><br><span class="line">xcb_connection_t *connection = xcb_connect (NULL, NULL);</span><br></pre></td></tr></table></figure></p>
 <h2 id="获取屏幕参数"><a href="#获取屏幕参数" class="headerlink" title="获取屏幕参数"></a>获取屏幕参数</h2><p>可以理解窗口系统是基于树的，那么要找到根窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/* Get the first screen */</span><br><span class="line">const xcb_setup_t      *setup  = xcb_get_setup (connection);</span><br><span class="line">xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator (setup);</span><br><span class="line">xcb_screen_t           *screen = iter.data;</span><br></pre></td></tr></table></figure></p>
 <p>这个时候就知道屏幕的宽度和高度了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/* Get bpp */</span><br><span class="line">const xcb_format_t* fmt    = xcb_setup_pixmap_formats(setup);</span><br><span class="line">int                 length = xcb_setup_pixmap_formats_length(setup);</span><br><span class="line">int                 bpp    = 0;</span><br><span class="line">while (length--) &#123;</span><br><span class="line">   if (screen-&gt;root_depth == fmt-&gt;depth) &#123;</span><br><span class="line">        bpp = fmt-&gt;bits_per_pixel;</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">    fmt++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint32_t width  = screen-&gt;width_in_pixels;</span><br><span class="line">uint32_t height = screen-&gt;height_in_pixels;</span><br><span class="line">uint32_t stride = screen-&gt;width_in_pixels * (bpp &gt;&gt; 3);</span><br></pre></td></tr></table></figure></p>
-<p>屏幕的数据格式中一个depth只会对应一个bpp，但一个bpp可能对应多个depth。</p>
+<p>屏幕的数据格式中一个depth只会对应一个bpp，但一个bpp可以对应多个depth。</p>
 <h2 id="分配内存"><a href="#分配内存" class="headerlink" title="分配内存"></a>分配内存</h2><p>知道屏幕参数了，那么在获取屏幕数据时要让X-server知道有那么一块地方可以存储数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">xcb_shm_segment_info_t shminfo;</span><br><span class="line">shminfo.shmid = shmget(IPC_PRIVATE, stride * height, (IPC_CREAT | 0666));</span><br><span class="line">if (shminfo.shmid == (uint32_t)-1) &#123;</span><br><span class="line">    // error stuff</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">shminfo.shmaddr = (uint8_t*)shmat(shminfo.shmid, 0, 0);</span><br><span class="line">if (shminfo.shmaddr == (uint8_t*)-1) &#123;</span><br><span class="line">    // error stuff</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">shminfo.shmseg = xcb_generate_id(connection_);</span><br><span class="line">xcb_shm_attach(connection_, shminfo.shmseg, shminfo.shmid, 0);</span><br></pre></td></tr></table></figure></p>
 <p>可以理解为内存共享吧，<code>shminfo.shmaddr</code>就是共享内存的首地址。</p>
 <h2 id="捕获屏幕像素"><a href="#捕获屏幕像素" class="headerlink" title="捕获屏幕像素"></a>捕获屏幕像素</h2><p>既然存储屏幕数据的内存有了，那么这个时候就可以让X-server把屏幕数据拷贝到这块内存了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">xcb_generic_error_t*       e      = nullptr;</span><br><span class="line">xcb_shm_get_image_cookie_t cookie = xcb_shm_get_image(connection, screen-&gt;root, 0, 0, width, height, ~0, XCB_IMAGE_FORMAT_Z_PIXMAP, shminfo.shmseg, 0);</span><br><span class="line">xcb_shm_get_image_reply_t* reply  = xcb_shm_get_image_reply(connection, cookie, &amp;e);</span><br><span class="line"></span><br><span class="line">if (e) &#123;</span><br><span class="line">    // error stuff</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (reply) &#123;</span><br><span class="line">    free(reply);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">xcb_flush(connection);</span><br></pre></td></tr></table></figure></p>
@@ -418,7 +418,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/linux/" rel="tag"># linux</a>
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
           
             <a href="/tags/screen-capture/" rel="tag"># screen capture</a>
           
