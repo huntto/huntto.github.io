@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FF">
+<meta name="keywords" content="linux,screen capture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Screen Capture">
+<meta property="og:url" content="http://huntto.me/2018/07/08/Linux-Screen-Capture/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FF">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-08T11:06:35.064Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux Screen Capture">
+<meta name="twitter:description" content="Linux屏幕捕获最简单的方式就是使用FFmpeg，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如vokoscreen。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FF">
+
+
+
+
+
+
+  <link rel="canonical" href="http://huntto.me/2018/07/08/Linux-Screen-Capture/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Linux Screen Capture | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/07/08/Linux-Screen-Capture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux Screen Capture
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-08 16:50:19 / Modified: 19:06:35" itemprop="dateCreated datePublished" datetime="2018-07-08T16:50:19+08:00">2018-07-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Linux屏幕捕获最简单的方式就是使用<a href="http://ffmpeg.org/" target="_blank" rel="noopener">FFmpeg</a>，一些Linux上的开源录屏软件也是基于FFmpeg开发的，如<a href="https://github.com/vkohaupt/vokoscreen" target="_blank" rel="noopener">vokoscreen</a>。如果需要在linux上实现录屏功能（单一屏幕捕获方式、单一编码格式），可能只需要使用FFmpeg中的一小部分功能，然而又不想把FFmpeg引到自己的项目中，那么可以参考FFmpeg实现自己的功能。第一可以可以熟悉linux屏幕的捕获方法；第二如果出现bug（虽然FFmpeg出bug的可能性比较小），也便于自己调试和修复。本文主要介绍使用<a href="https://xcb.freedesktop.org/" target="_blank" rel="noopener">xcb</a>实现linux上的屏幕捕获功能。</p>
+<a id="more"></a>
+<hr>
+<blockquote>
+<p>The X protocol C-language Binding (XCB) is a replacement for Xlib featuring a small footprint, latency hiding, direct access to the protocol, improved threading support, and extensibility.[1]</p>
+</blockquote>
+<p>在Linux上可以使用Ctrl+Alt+Fx键在字符终端与窗口界面之间进行切换。如果要捕获窗口界面又想跳过root权限，那么选用X协议窗口系统提供的接口是个不错的选择（什么是X protocol可以参看<a href="https://en.wikipedia.org/wiki/X_Window_System_core_protocol" target="_blank" rel="noopener">Wikipedia</a>）；如果要捕获字符终端的屏幕，X窗口系统就爱莫能助了，这个时候可以通过读取fb0来获取屏幕数据，但是需要root权限。为什么选用xcb呢？嗯嗯…… 除了Xlib，好像没得选了。以下是通过xcb捕获屏幕的具体步骤。</p>
+<h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>X协议的窗口系统是基于网络的，存在一个服务端X-server，而我们就是客户端。<br>客户端在进行一系列操作之前需要先与服务端建立连接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* Open the connection to the X server */</span><br><span class="line">xcb_connection_t *connection = xcb_connect (NULL, NULL);</span><br></pre></td></tr></table></figure></p>
+<h2 id="获取屏幕参数"><a href="#获取屏幕参数" class="headerlink" title="获取屏幕参数"></a>获取屏幕参数</h2><p>可以理解窗口系统是基于树的，那么要找到根窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/* Get the first screen */</span><br><span class="line">const xcb_setup_t      *setup  = xcb_get_setup (connection);</span><br><span class="line">xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator (setup);</span><br><span class="line">xcb_screen_t           *screen = iter.data;</span><br></pre></td></tr></table></figure></p>
+<p>这个时候就知道屏幕的宽度和高度了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/* Get bpp */</span><br><span class="line">const xcb_format_t* fmt    = xcb_setup_pixmap_formats(setup);</span><br><span class="line">int                 length = xcb_setup_pixmap_formats_length(setup);</span><br><span class="line">int                 bpp    = 0;</span><br><span class="line">while (length--) &#123;</span><br><span class="line">   if (screen-&gt;root_depth == fmt-&gt;depth) &#123;</span><br><span class="line">        bpp = fmt-&gt;bits_per_pixel;</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">    fmt++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint32_t width  = screen-&gt;width_in_pixels;</span><br><span class="line">uint32_t height = screen-&gt;height_in_pixels;</span><br><span class="line">uint32_t stride = screen-&gt;width_in_pixels * (bpp &gt;&gt; 3);</span><br></pre></td></tr></table></figure></p>
+<p>屏幕的数据格式中一个depth只会对应一个bpp，但一个bpp可能对应多个depth。</p>
+<h2 id="分配内存"><a href="#分配内存" class="headerlink" title="分配内存"></a>分配内存</h2><p>知道屏幕参数了，那么在获取屏幕数据时要让X-server知道有那么一块地方可以存储数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">xcb_shm_segment_info_t shminfo;</span><br><span class="line">shminfo.shmid = shmget(IPC_PRIVATE, stride * height, (IPC_CREAT | 0666));</span><br><span class="line">if (shminfo.shmid == (uint32_t)-1) &#123;</span><br><span class="line">    // error stuff</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">shminfo.shmaddr = (uint8_t*)shmat(shminfo.shmid, 0, 0);</span><br><span class="line">if (shminfo.shmaddr == (uint8_t*)-1) &#123;</span><br><span class="line">    // error stuff</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">shminfo.shmseg = xcb_generate_id(connection_);</span><br><span class="line">xcb_shm_attach(connection_, shminfo.shmseg, shminfo.shmid, 0);</span><br></pre></td></tr></table></figure></p>
+<p>可以理解为内存共享吧，<code>shminfo.shmaddr</code>就是共享内存的首地址。</p>
+<h2 id="捕获屏幕像素"><a href="#捕获屏幕像素" class="headerlink" title="捕获屏幕像素"></a>捕获屏幕像素</h2><p>既然存储屏幕数据的内存有了，那么这个时候就可以让X-server把屏幕数据拷贝到这块内存了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">xcb_generic_error_t*       e      = nullptr;</span><br><span class="line">xcb_shm_get_image_cookie_t cookie = xcb_shm_get_image(connection, screen-&gt;root, 0, 0, width, height, ~0, XCB_IMAGE_FORMAT_Z_PIXMAP, shminfo.shmseg, 0);</span><br><span class="line">xcb_shm_get_image_reply_t* reply  = xcb_shm_get_image_reply(connection, cookie, &amp;e);</span><br><span class="line"></span><br><span class="line">if (e) &#123;</span><br><span class="line">    // error stuff</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (reply) &#123;</span><br><span class="line">    free(reply);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">xcb_flush(connection);</span><br></pre></td></tr></table></figure></p>
+<p>现在<code>shminfo.shmaddr</code>里面就是当前屏幕的像素数据了，这段代码一般放在<code>while</code>循环里。</p>
+<h2 id="释放内存和断开连接"><a href="#释放内存和断开连接" class="headerlink" title="释放内存和断开连接"></a>释放内存和断开连接</h2><p>最后如果结束了要记得断开连接和释放内存。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">xcb_shm_detach(connection, shminfo.shmseg);</span><br><span class="line"></span><br><span class="line">shmdt(shminfo.shmaddr);</span><br><span class="line">shmctl(shminfo.shmid, IPC_RMID, 0);</span><br><span class="line"></span><br><span class="line">xcb_disconnect(connection);</span><br></pre></td></tr></table></figure></p>
+<p>是不是很简单，别高兴的太早，这个时候好像还缺点什么？没有光标、没有编码、没有存储、没有音频。</p>
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1]. <a href="https://xcb.freedesktop.org/" target="_blank" rel="noopener">xcb</a><br>[2]. <a href="https://stackoverflow.com/questions/32972539/gdk-x11-screen-capture" target="_blank" rel="noopener">https://stackoverflow.com/questions/32972539/gdk-x11-screen-capture</a><br>[3]. <a href="https://github.com/bawNg/krad_radio" target="_blank" rel="noopener">https://github.com/bawNg/krad_radio</a><br>[4]. <a href="http://ffmpeg.org/doxygen/trunk/xcbgrab_8c_source.html" target="_blank" rel="noopener">http://ffmpeg.org/doxygen/trunk/xcbgrab_8c_source.html</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/screen-capture/" rel="tag"># screen capture</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/17/Xcode-LearnOpenGL-Templates/" rel="next" title="Xcode-LearnOpenGL-Templates">
+                <i class="fa fa-chevron-left"></i> Xcode-LearnOpenGL-Templates
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#建立连接"><span class="nav-number">1.</span> <span class="nav-text">建立连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取屏幕参数"><span class="nav-number">2.</span> <span class="nav-text">获取屏幕参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分配内存"><span class="nav-number">3.</span> <span class="nav-text">分配内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#捕获屏幕像素"><span class="nav-number">4.</span> <span class="nav-text">捕获屏幕像素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#释放内存和断开连接"><span class="nav-number">5.</span> <span class="nav-text">释放内存和断开连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
