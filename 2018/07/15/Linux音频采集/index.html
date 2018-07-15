@@ -117,7 +117,7 @@
 <meta property="og:description" content="声波通过气体、液体和固体等介质传播。麦克风内置碳膜受空气中声波的挤压产生振动，根据振动的频率和幅度产生相应的电信号（模拟电信号）。此时的模拟电信号还不能进行传输和存储，需要将其转换为数字信号（二进制bit位表示），模拟信号的数字化过程称为采样量化。采样量化后的数据称为PCM（Pulse Code Modulation）。如何进行采样量化呢？">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://huntto.me/2018/07/15/Linux音频采集/PCM.png">
-<meta property="og:updated_time" content="2018-07-15T10:13:48.427Z">
+<meta property="og:updated_time" content="2018-07-15T14:05:22.844Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux音频采集">
 <meta name="twitter:description" content="声波通过气体、液体和固体等介质传播。麦克风内置碳膜受空气中声波的挤压产生振动，根据振动的频率和幅度产生相应的电信号（模拟电信号）。此时的模拟电信号还不能进行传输和存储，需要将其转换为数字信号（二进制bit位表示），模拟信号的数字化过程称为采样量化。采样量化后的数据称为PCM（Pulse Code Modulation）。如何进行采样量化呢？">
@@ -325,7 +325,7 @@
                 
               
 
-              <time title="Created: 2018-07-15 16:12:15 / Modified: 18:13:48" itemprop="dateCreated datePublished" datetime="2018-07-15T16:12:15+08:00">2018-07-15</time>
+              <time title="Created: 2018-07-15 16:12:15 / Modified: 22:05:22" itemprop="dateCreated datePublished" datetime="2018-07-15T16:12:15+08:00">2018-07-15</time>
             
 
             
@@ -348,6 +348,13 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/音频/" itemprop="url" rel="index"><span itemprop="name">音频</span></a></span>
 
                 
                 
@@ -382,12 +389,9 @@
 
       
         <p>声波通过气体、液体和固体等介质传播。麦克风内置碳膜受空气中声波的挤压产生振动，根据振动的频率和幅度产生相应的电信号（模拟电信号）。此时的模拟电信号还不能进行传输和存储，需要将其转换为数字信号（二进制<code>bit</code>位表示），模拟信号的数字化过程称为采样量化。采样量化后的数据称为PCM（Pulse Code Modulation）。如何进行采样量化呢？</p>
-<div class="image-size-200"><br><img src="/2018/07/15/Linux音频采集/PCM.png" title="这是一个新的博客的图片的说明"><br></div>
-
-
-<a id="more"></a>
+<p><div class="image-size-200"><br><img src="/2018/07/15/Linux音频采集/PCM.png" title="这是一个新的博客的图片的说明"><br></div><br><a id="more"></a></p>
 <hr>
-<h2 id="PCM参数简介"><a href="#PCM参数简介" class="headerlink" title="PCM参数简介"></a>PCM参数简介</h2><p>音频采集（采样量化）对于开发应用的程序员来说非常简单，因为在Android、Linux、Mac OSX和Windows中都提供了对应得API，但是要正确使用这些API需要了解一下PCM的一些概念：量化格式（sample format）、采样率（sample rate）和声道数（channels）。</p>
+<h2 id="PCM参数简介"><a href="#PCM参数简介" class="headerlink" title="PCM参数简介"></a>PCM参数简介</h2><p>音频采集（采样量化）对于开发应用的程序员来说非常简单，因为在Android、Linux、Mac OSX和Windows中都提供了对应的API，但是要正确使用这些API需要了解一下PCM的一些概念：量化格式（sample format）、采样率（sample rate）和声道数（channels）。</p>
 <ul>
 <li>采样率（sample rate）是指每秒进行多少次采样，如44100是指每秒进行44100次采样，采样率越高，声音越细腻（细节越精准）。</li>
 <li>量化格式（sample format）是指每一个采样处波形的幅值对应的一个数值，如果这个数值用16位的二进制整数来表示，那么波形的量化范围是-32768~32767，使用的位数越高精度也就越高，存储的音频在数模转换时，还原就越准确。</li>
@@ -446,7 +450,7 @@
 <h3 id="音频输出捕获"><a href="#音频输出捕获" class="headerlink" title="音频输出捕获"></a>音频输出捕获</h3><p>如果采集电脑扬声器输出的音频数据，那么ALSA可能有点力不从心了，还好<a href="https://www.audacityteam.org/" target="_blank" rel="noopener">Audacity</a>给出了一些<a href="https://manual.audacityteam.org/man/tutorial_recording_computer_playback_on_linux.html" target="_blank" rel="noopener">方法</a>，同时查看<a href="http://ffmpeg.org/" target="_blank" rel="noopener">FFmpeg</a>的<a href="http://ffmpeg.org/doxygen/trunk/dir_ac0f646f7dac5d9f814abb87c8dfa999.html" target="_blank" rel="noopener">libavdevice</a>源码，也提供了各种音频捕获的方法。经过我的尝试，<a href="https://www.freedesktop.org/wiki/Software/PulseAudio/" target="_blank" rel="noopener">PulseAudio</a>可以捕获音频输出。</p>
 <h4 id="PulseAudio官方示例"><a href="#PulseAudio官方示例" class="headerlink" title="PulseAudio官方示例"></a>PulseAudio官方示例</h4><p>在PulseAudio的官方文档中给出了两份示例，其中<a href="https://freedesktop.org/software/pulseaudio/doxygen/pacat-simple_8c-example.html" target="_blank" rel="noopener">pacat-simple.c</a>用于PCM数据播放，<a href="https://freedesktop.org/software/pulseaudio/doxygen/parec-simple_8c-example.html" target="_blank" rel="noopener">parec-simple.c</a>用于PCM数据捕获，先来看一下初始化的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/* The sample type to use */</span><br><span class="line">static const pa_sample_spec ss = &#123;</span><br><span class="line">    .format = PA_SAMPLE_S16LE,</span><br><span class="line">    .rate = 44100,</span><br><span class="line">    .channels = 2</span><br><span class="line">&#125;;</span><br><span class="line">pa_simple *s = NULL;</span><br><span class="line">int ret = 1;</span><br><span class="line">int error;</span><br><span class="line"></span><br><span class="line">/* Create the recording stream */</span><br><span class="line">if (!(s = pa_simple_new(NULL, argv[0], PA_STREAM_RECORD, NULL, &quot;record&quot;, &amp;ss, NULL, NULL, &amp;error))) &#123;</span><br><span class="line">    fprintf(stderr, __FILE__&quot;: pa_simple_new() failed: %s\n&quot;, pa_strerror(error));</span><br><span class="line">    goto finish;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>首先设置PCM的参数（前面已经介绍），然后就是创建一个可以循环读取PCM数据的对象<code>pa_simple</code>，再来看一下函数<code>pa_simple_new</code>的原型：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/** Create a new connection to the server. */</span><br><span class="line">pa_simple* pa_simple_new(</span><br><span class="line">    const char *server,                 /**&lt; Server name, or NULL for default */</span><br><span class="line">    const char *name,                   /**&lt; A descriptive name for this client (application name, ...) */</span><br><span class="line">    pa_stream_direction_t dir,          /**&lt; Open this stream for recording or playback? */</span><br><span class="line">    const char *dev,                    /**&lt; Sink (resp. source) name, or NULL for default */</span><br><span class="line">    const char *stream_name,            /**&lt; A descriptive name for this stream (application name, song title, ...) */</span><br><span class="line">    const pa_sample_spec *ss,           /**&lt; The sample type to use */</span><br><span class="line">    const pa_channel_map *map,          /**&lt; The channel map to use, or NULL for default */</span><br><span class="line">    const pa_buffer_attr *attr,         /**&lt; Buffering attributes, or NULL for default */</span><br><span class="line">    int *error                          /**&lt; A pointer where the error code is stored when the routine returns NULL. It is OK to pass NULL here. */</span><br><span class="line">    );</span><br></pre></td></tr></table></figure></p>
-<p>里面的注释已经很清楚了，但是第四个参数<code>const char *dev</code>，在前面的示例代码中设为了<code>NULL</code>，这个是音频源设备的名称，如果为<code>NULL</code>既为默认设备，默认设备为麦克风（如果有的话），那么运行<code>parec-simple</code>就只能获取麦克风的PCM数据了。如果要捕获音频输出，那么就需要知道音频输出对应的设备名称。</p>
+<p>里面的注释已经很清楚了，但是第四个参数<code>const char *dev</code>，在前面的示例代码中设为了<code>NULL</code>，这个是音频源设备的名称，如果是<code>NULL</code>既为默认设备，我在Linux上验证默认设备为麦克风，那么运行<code>parec-simple</code>就只能获取麦克风的PCM数据了。如果要捕获音频输出，那么就需要知道音频输出对应的设备名称。</p>
 <h4 id="获取音频输出设备"><a href="#获取音频输出设备" class="headerlink" title="获取音频输出设备"></a>获取音频输出设备</h4><blockquote>
 <p> 为什么PulseAudio可以捕获音频输出，来看一下PulseAudio的角色：</p>
 </blockquote>
@@ -604,7 +608,11 @@ PulseAudio->Application:audio input</textarea><textarea id="sequence-0-options" 
                     
                       
                     
-                    <span class="site-state-item-count">2</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">categories</span>
                   </a>
                 </div>
