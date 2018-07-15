@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="声波通过气体、液体和固体等介质传播。麦克风内置碳膜受空气中声波的挤压产生振动，根据振动的频率和幅度产生相应的电信号（模拟电信号）。此时的模拟电信号还不能进行传输和存储，需要将其转换为数字信号（二进制bit位表示），模拟信号的数字化过程称为采样量化。采样量化后的数据称为PCM（Pulse Code Modulation）。如何进行采样量化呢？">
+<meta name="keywords" content="linux,audio,PulseAudio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux音频采集">
+<meta property="og:url" content="http://huntto.me/2018/07/15/Linux音频采集/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="声波通过气体、液体和固体等介质传播。麦克风内置碳膜受空气中声波的挤压产生振动，根据振动的频率和幅度产生相应的电信号（模拟电信号）。此时的模拟电信号还不能进行传输和存储，需要将其转换为数字信号（二进制bit位表示），模拟信号的数字化过程称为采样量化。采样量化后的数据称为PCM（Pulse Code Modulation）。如何进行采样量化呢？">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://huntto.me/2018/07/15/Linux音频采集/PCM.png">
+<meta property="og:updated_time" content="2018-07-15T10:13:48.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux音频采集">
+<meta name="twitter:description" content="声波通过气体、液体和固体等介质传播。麦克风内置碳膜受空气中声波的挤压产生振动，根据振动的频率和幅度产生相应的电信号（模拟电信号）。此时的模拟电信号还不能进行传输和存储，需要将其转换为数字信号（二进制bit位表示），模拟信号的数字化过程称为采样量化。采样量化后的数据称为PCM（Pulse Code Modulation）。如何进行采样量化呢？">
+<meta name="twitter:image" content="http://huntto.me/2018/07/15/Linux音频采集/PCM.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://huntto.me/2018/07/15/Linux音频采集/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Linux音频采集 | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/07/15/Linux音频采集/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux音频采集
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-15 16:12:15 / Modified: 18:13:48" itemprop="dateCreated datePublished" datetime="2018-07-15T16:12:15+08:00">2018-07-15</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>声波通过气体、液体和固体等介质传播。麦克风内置碳膜受空气中声波的挤压产生振动，根据振动的频率和幅度产生相应的电信号（模拟电信号）。此时的模拟电信号还不能进行传输和存储，需要将其转换为数字信号（二进制<code>bit</code>位表示），模拟信号的数字化过程称为采样量化。采样量化后的数据称为PCM（Pulse Code Modulation）。如何进行采样量化呢？</p>
+<div class="image-size-200"><br><img src="/2018/07/15/Linux音频采集/PCM.png" title="这是一个新的博客的图片的说明"><br></div>
+
+
+<a id="more"></a>
+<hr>
+<h2 id="PCM参数简介"><a href="#PCM参数简介" class="headerlink" title="PCM参数简介"></a>PCM参数简介</h2><p>音频采集（采样量化）对于开发应用的程序员来说非常简单，因为在Android、Linux、Mac OSX和Windows中都提供了对应得API，但是要正确使用这些API需要了解一下PCM的一些概念：量化格式（sample format）、采样率（sample rate）和声道数（channels）。</p>
+<ul>
+<li>采样率（sample rate）是指每秒进行多少次采样，如44100是指每秒进行44100次采样，采样率越高，声音越细腻（细节越精准）。</li>
+<li>量化格式（sample format）是指每一个采样处波形的幅值对应的一个数值，如果这个数值用16位的二进制整数来表示，那么波形的量化范围是-32768~32767，使用的位数越高精度也就越高，存储的音频在数模转换时，还原就越准确。</li>
+<li>声道数（channels），简单点说，对于播放时，如果是单声道就是只有一个喇叭发声，双声道就是两个喇叭发声；对于采集来说，双声道就是有两个麦克风。虽然有些设备支持双声道采集，但是采集的数据跟单声道没有区别，一是声音来源只有一处，二是设备不够专业。对于程序员来说，16次采样量化，单声道就是16次采样，而双声道包括8次左声道和8次右声道的采样，且是交替排列的。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>num channels</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mono</td>
+<td>frame</td>
+<td>frame</td>
+<td>frame</td>
+<td>frame</td>
+<td>frame</td>
+<td>frame</td>
+<td>frame</td>
+<td>frame</td>
+</tr>
+<tr>
+<td>Stereo</td>
+<td>Lframe</td>
+<td>Rframe</td>
+<td>Lframe</td>
+<td>Rframe</td>
+<td>Lframe</td>
+<td>Rframe</td>
+<td>Lframe</td>
+<td>Rframe</td>
+</tr>
+</tbody>
+</table>
+<p>采样得到PCM数据后，需要记下采样率、量化格式和声道数三个参数，不然PCM数据无法正确播放；而且如果要对PCM数据进行编码压缩，这三个参数也是非常重要的。</p>
+<h2 id="音频采集"><a href="#音频采集" class="headerlink" title="音频采集"></a>音频采集</h2><p>本文主要以Linux的音频采集为例，只要了解了Linux的音频采集的API，对于其他系统来说也是信手拈来（毕竟大同小异）。</p>
+<h3 id="麦克风音频采集"><a href="#麦克风音频采集" class="headerlink" title="麦克风音频采集"></a>麦克风音频采集</h3><p>在Linux系统中可以使用ALSA（Advanced Linux Sound Architecture）</p>
+<ul>
+<li>有效支持所有类型的音频接口，包括消费级声卡到多通道音频接口的专业级声卡。</li>
+<li>完全模块化的音频驱动序。</li>
+<li>SMP和线程安全设计。</li>
+<li>alsa-lib库使使编写程序更加简单，且提供更高级别的功能。</li>
+<li>支持OSS API，兼容大多数OSS程序。</li>
+</ul>
+<p>具体的使用这里不做介绍，因为有更好的参考资料<a href="http://www.alsa-project.org/main/index.php/Tutorials_and_Presentations" target="_blank" rel="noopener">Tutorials for application developers</a></p>
+<h3 id="音频输出捕获"><a href="#音频输出捕获" class="headerlink" title="音频输出捕获"></a>音频输出捕获</h3><p>如果采集电脑扬声器输出的音频数据，那么ALSA可能有点力不从心了，还好<a href="https://www.audacityteam.org/" target="_blank" rel="noopener">Audacity</a>给出了一些<a href="https://manual.audacityteam.org/man/tutorial_recording_computer_playback_on_linux.html" target="_blank" rel="noopener">方法</a>，同时查看<a href="http://ffmpeg.org/" target="_blank" rel="noopener">FFmpeg</a>的<a href="http://ffmpeg.org/doxygen/trunk/dir_ac0f646f7dac5d9f814abb87c8dfa999.html" target="_blank" rel="noopener">libavdevice</a>源码，也提供了各种音频捕获的方法。经过我的尝试，<a href="https://www.freedesktop.org/wiki/Software/PulseAudio/" target="_blank" rel="noopener">PulseAudio</a>可以捕获音频输出。</p>
+<h4 id="PulseAudio官方示例"><a href="#PulseAudio官方示例" class="headerlink" title="PulseAudio官方示例"></a>PulseAudio官方示例</h4><p>在PulseAudio的官方文档中给出了两份示例，其中<a href="https://freedesktop.org/software/pulseaudio/doxygen/pacat-simple_8c-example.html" target="_blank" rel="noopener">pacat-simple.c</a>用于PCM数据播放，<a href="https://freedesktop.org/software/pulseaudio/doxygen/parec-simple_8c-example.html" target="_blank" rel="noopener">parec-simple.c</a>用于PCM数据捕获，先来看一下初始化的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/* The sample type to use */</span><br><span class="line">static const pa_sample_spec ss = &#123;</span><br><span class="line">    .format = PA_SAMPLE_S16LE,</span><br><span class="line">    .rate = 44100,</span><br><span class="line">    .channels = 2</span><br><span class="line">&#125;;</span><br><span class="line">pa_simple *s = NULL;</span><br><span class="line">int ret = 1;</span><br><span class="line">int error;</span><br><span class="line"></span><br><span class="line">/* Create the recording stream */</span><br><span class="line">if (!(s = pa_simple_new(NULL, argv[0], PA_STREAM_RECORD, NULL, &quot;record&quot;, &amp;ss, NULL, NULL, &amp;error))) &#123;</span><br><span class="line">    fprintf(stderr, __FILE__&quot;: pa_simple_new() failed: %s\n&quot;, pa_strerror(error));</span><br><span class="line">    goto finish;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先设置PCM的参数（前面已经介绍），然后就是创建一个可以循环读取PCM数据的对象<code>pa_simple</code>，再来看一下函数<code>pa_simple_new</code>的原型：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/** Create a new connection to the server. */</span><br><span class="line">pa_simple* pa_simple_new(</span><br><span class="line">    const char *server,                 /**&lt; Server name, or NULL for default */</span><br><span class="line">    const char *name,                   /**&lt; A descriptive name for this client (application name, ...) */</span><br><span class="line">    pa_stream_direction_t dir,          /**&lt; Open this stream for recording or playback? */</span><br><span class="line">    const char *dev,                    /**&lt; Sink (resp. source) name, or NULL for default */</span><br><span class="line">    const char *stream_name,            /**&lt; A descriptive name for this stream (application name, song title, ...) */</span><br><span class="line">    const pa_sample_spec *ss,           /**&lt; The sample type to use */</span><br><span class="line">    const pa_channel_map *map,          /**&lt; The channel map to use, or NULL for default */</span><br><span class="line">    const pa_buffer_attr *attr,         /**&lt; Buffering attributes, or NULL for default */</span><br><span class="line">    int *error                          /**&lt; A pointer where the error code is stored when the routine returns NULL. It is OK to pass NULL here. */</span><br><span class="line">    );</span><br></pre></td></tr></table></figure></p>
+<p>里面的注释已经很清楚了，但是第四个参数<code>const char *dev</code>，在前面的示例代码中设为了<code>NULL</code>，这个是音频源设备的名称，如果为<code>NULL</code>既为默认设备，默认设备为麦克风（如果有的话），那么运行<code>parec-simple</code>就只能获取麦克风的PCM数据了。如果要捕获音频输出，那么就需要知道音频输出对应的设备名称。</p>
+<h4 id="获取音频输出设备"><a href="#获取音频输出设备" class="headerlink" title="获取音频输出设备"></a>获取音频输出设备</h4><blockquote>
+<p> 为什么PulseAudio可以捕获音频输出，来看一下PulseAudio的角色：</p>
+</blockquote>
+<p><div id="sequence-0"></div></p>
+<blockquote>
+<p>意思是PulseAudio是一个代理的角色，不管音频是输出还是输入都要经过它，所以它可以捕获任何应用的音频输出（前提是这些应用是使用的PulseAudio的API）。</p>
+</blockquote>
+<p>在介绍怎么获取音频输出设备之前先要明白什么是<code>Sink</code>和<code>Source</code>：</p>
+<ul>
+<li>Sink可以理解为音频输出端，如扬声器、耳机等。</li>
+<li>Source为音频输入源，如麦克风。</li>
+</ul>
+<p>现在需要做得就是获取<code>Source</code>设备，获取<code>Source</code>设备主要调用<code>pa_context_get_source_info_list</code>方法，具体步骤可以参考<a href="https://github.com/cdemoulins/pamixer" target="_blank" rel="noopener">pamixer</a>和FFmpeg的<a href="http://ffmpeg.org/doxygen/trunk/pulse__audio__common_8c_source.html" target="_blank" rel="noopener">pulse_audio_common.c</a>。获取到的设备列表中包括<code>Micphone</code>等常规音频输入设备外，还有一个<br>特殊的<code>Source</code>设备，特殊在它是一个<code>Sink</code>，可以通过下面的方式判断：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">void SourceListCallback(pa_context *, const pa_source_info *info, int eol,</span><br><span class="line">                        void *userdata) &#123;</span><br><span class="line">    if (eol != 0) return;</span><br><span class="line">    </span><br><span class="line">    ... ...</span><br><span class="line">    </span><br><span class="line">    if (info != nullptr &amp;&amp; info-&gt;monitor_of_sink != PA_INVALID_INDEX) &#123;</span><br><span class="line">        // Got wanted device</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么对应的<code>info-&gt;name</code>就是传入方法<code>pa_simple_new</code>的第四个参数。那么接下来就是循环读取PCM数据了，这里不再赘述。</p>
+<h2 id="编码压缩"><a href="#编码压缩" class="headerlink" title="编码压缩"></a>编码压缩</h2><p>由于采集到的PCM数据存在冗余信息，可以通过压缩算法将其大小减少到符合当前本地存储和网络传送的限制。网上提供了大量的音频压缩库供使用，这里不进行展开，有时间将在新的文章中进行阐述。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1]. <a href="http://www.cnblogs.com/6DAN_HUST/archive/2009/09/28/1575819.html" target="_blank" rel="noopener">PCM编码示意图</a><script src="https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js"></script><script src="https://cdn.bootcss.com/raphael/2.2.7/raphael.min.js"></script><script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore-min.js"></script><script src="https://cdn.bootcss.com/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script><textarea id="sequence-0-code" style="display: none">Application->PulseAudio:audio output
+PulseAudio->ALSA:audio output
+ALSA->Speaker/Micphone:audio output
+Speaker/Micphone->ALSA:audio input
+ALSA->PulseAudio:audio input
+PulseAudio->Application:audio input</textarea><textarea id="sequence-0-options" style="display: none">{"theme":"simple"}</textarea><script>  var code = document.getElementById("sequence-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("sequence-0-options").value));  var diagram = Diagram.parse(code);  diagram.drawSVG("sequence-0", options);</script></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/audio/" rel="tag"># audio</a>
+          
+            <a href="/tags/PulseAudio/" rel="tag"># PulseAudio</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/08/Linux-Screen-Capture/" rel="next" title="Linux Screen Capture">
+                <i class="fa fa-chevron-left"></i> Linux Screen Capture
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PCM参数简介"><span class="nav-number">1.</span> <span class="nav-text">PCM参数简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#音频采集"><span class="nav-number">2.</span> <span class="nav-text">音频采集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#麦克风音频采集"><span class="nav-number">2.1.</span> <span class="nav-text">麦克风音频采集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#音频输出捕获"><span class="nav-number">2.2.</span> <span class="nav-text">音频输出捕获</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PulseAudio官方示例"><span class="nav-number">2.2.1.</span> <span class="nav-text">PulseAudio官方示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取音频输出设备"><span class="nav-number">2.2.2.</span> <span class="nav-text">获取音频输出设备</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码压缩"><span class="nav-number">3.</span> <span class="nav-text">编码压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
