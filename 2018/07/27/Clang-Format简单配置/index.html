@@ -108,29 +108,25 @@
 
 
 
-  <meta name="description" content="最近通过LearnOpenGL教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项">
-<meta name="keywords" content="Xcode Templates,LearnOpenGL">
+  <meta name="description" content="最近可是接触C/C++项目，在Linux上尝试了Vim、VSCode和QTCreator等工具进行开发，每个工具的默认代码格式化风格都不一样，如果团队成员使用的是不同的开发工具，那么代码的自动格式化必须要解决，幸好Clang-Foramt解决了这个难题。Clang-Format是一个代码格式化工具，可以配合Vim、QTCreator、VSCode和Xcode一起使用。接下来以Clang-Forma">
+<meta name="keywords" content="C&#x2F;C++,代码格式化,Clang-Format">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Xcode-LearnOpenGL-Templates">
-<meta property="og:url" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/index.html">
+<meta property="og:title" content="Clang-Format简单配置">
+<meta property="og:url" content="http://huntto.me/2018/07/27/Clang-Format简单配置/index.html">
 <meta property="og:site_name" content="且行且记">
-<meta property="og:description" content="最近通过LearnOpenGL教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项">
+<meta property="og:description" content="最近可是接触C/C++项目，在Linux上尝试了Vim、VSCode和QTCreator等工具进行开发，每个工具的默认代码格式化风格都不一样，如果团队成员使用的是不同的开发工具，那么代码的自动格式化必须要解决，幸好Clang-Foramt解决了这个难题。Clang-Format是一个代码格式化工具，可以配合Vim、QTCreator、VSCode和Xcode一起使用。接下来以Clang-Forma">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/custom_paths.png">
-<meta property="og:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/new_project.png">
-<meta property="og:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/result.png">
-<meta property="og:updated_time" content="2018-04-07T12:27:36.110Z">
+<meta property="og:updated_time" content="2018-07-27T14:45:23.001Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Xcode-LearnOpenGL-Templates">
-<meta name="twitter:description" content="最近通过LearnOpenGL教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项">
-<meta name="twitter:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/custom_paths.png">
+<meta name="twitter:title" content="Clang-Format简单配置">
+<meta name="twitter:description" content="最近可是接触C/C++项目，在Linux上尝试了Vim、VSCode和QTCreator等工具进行开发，每个工具的默认代码格式化风格都不一样，如果团队成员使用的是不同的开发工具，那么代码的自动格式化必须要解决，幸好Clang-Foramt解决了这个难题。Clang-Format是一个代码格式化工具，可以配合Vim、QTCreator、VSCode和Xcode一起使用。接下来以Clang-Forma">
 
 
 
 
 
 
-  <link rel="canonical" href="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/"/>
+  <link rel="canonical" href="http://huntto.me/2018/07/27/Clang-Format简单配置/"/>
 
 
 
@@ -140,7 +136,7 @@
   };
 </script>
 
-  <title>Xcode-LearnOpenGL-Templates | 且行且记</title>
+  <title>Clang-Format简单配置 | 且行且记</title>
   
 
 
@@ -285,7 +281,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/">
+    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/07/27/Clang-Format简单配置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Huntto">
@@ -302,7 +298,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Xcode-LearnOpenGL-Templates
+          <h1 class="post-title" itemprop="name headline">Clang-Format简单配置
               
             
           </h1>
@@ -327,24 +323,12 @@
                 
               
 
-              <time title="Created: 2018-03-17 22:28:14" itemprop="dateCreated datePublished" datetime="2018-03-17T22:28:14+08:00">2018-03-17</time>
+              <time title="Created: 2018-07-27 22:31:10 / Modified: 22:45:23" itemprop="dateCreated datePublished" datetime="2018-07-27T22:31:10+08:00">2018-07-27</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2018-04-07 20:27:36" itemprop="dateModified" datetime="2018-04-07T20:27:36+08:00">2018-04-07</time>
               
             
           </span>
@@ -361,7 +345,14 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C-C/代码格式化/" itemprop="url" rel="index"><span itemprop="name">代码格式化</span></a></span>
 
                 
                 
@@ -395,20 +386,15 @@
       
 
       
-        <p>最近通过<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">LearnOpenGL</a>教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项目时可以节省一些时间。</p>
+        <p>最近可是接触C/C++项目，在Linux上尝试了Vim、VSCode和QTCreator等工具进行开发，每个工具的默认代码格式化风格都不一样，如果团队成员使用的是不同的开发工具，那么代码的自动格式化必须要解决，幸好Clang-Foramt解决了这个难题。Clang-Format是一个代码格式化工具，可以配合Vim、QTCreator、VSCode和Xcode一起使用。接下来以Clang-Format最简单的配置开始。</p>
 <a id="more"></a>
 <hr>
-<p>接下来我会介绍怎么使用<a href="https://github.com/huntto/Xcode-LearnOpenGL-Templates" target="_blank" rel="noopener">这个模板</a>。</p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>使用Xcode编写OpenGL程序需要用到<a href="http://www.glfw.org/index.html" target="_blank" rel="noopener">GLFW</a>和<a href="http://glad.dav1d.de/" target="_blank" rel="noopener">GLAD</a>。</p>
-<h3 id="安装GLFW"><a href="#安装GLFW" class="headerlink" title="安装GLFW"></a>安装GLFW</h3><p>执行shell命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install glfw</span><br></pre></td></tr></table></figure></p>
-<p>安装成功后，可以在/usr/local/Cellar/glfw目录下找到对应版本的头文件和库文件。</p>
-<h3 id="在线生产GLAD"><a href="#在线生产GLAD" class="headerlink" title="在线生产GLAD"></a>在线生产GLAD</h3><p>在GLAD的在线服务网站上，Language选择C/C++，Specification选择OpenGL，API/gl选择3.3，Profile选择Core，Options勾选Generate a loader。点击GENERATE生成库文件。将glad.zip解压到$HOME目录下。</p>
-<h3 id="安装Xcode"><a href="#安装Xcode" class="headerlink" title="安装Xcode"></a>安装Xcode</h3><p>通过App Store下载<a href="https://developer.apple.com/download/" target="_blank" rel="noopener">Xcode</a>。</p>
-<h3 id="配置Xcode"><a href="#配置Xcode" class="headerlink" title="配置Xcode"></a>配置Xcode</h3><p>选择Xcode-&gt;Preferences…-&gt;Locations-&gt;Custom Paths，配置如下：<br><img src="custom_paths.png" alt="custom_paths"></p>
-<h2 id="使用模板"><a href="#使用模板" class="headerlink" title="使用模板"></a>使用模板</h2><p>执行shell命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/huntto/Xcode-LearnOpenGL-Templates ~/Library/Developer/Xcode/Templates/Project\ Templates/Mac/LearnOpenGL</span><br></pre></td></tr></table></figure></p>
-<p>创建项目时，可以看到如下的模板选项：<br><img src="new_project.png" alt="new_project"><br>创建完项目后，直接点击运行后的结果如下图所示：<br><img src="result.png" alt="result"></p>
-<hr>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>[1]. <a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">LearnOpenGL</a><br>[2]. <a href="https://www.telerik.com/blogs/how-to-create-custom-project-templates-in-xcode-7" target="_blank" rel="noopener">How to Create Custom Project Templates in Xcode 7</a></p>
+<h2 id="导出格式文件"><a href="#导出格式文件" class="headerlink" title="导出格式文件"></a>导出格式文件</h2><p>要使用Clang-Format，首先要确保本机已安装Clang-Format，Mac OSX通过<code>brew install clang-format</code>安装，Linux的不同发行版本命令不一样，其中Manjaro可以通过<code>sudo pacman -S clang-format</code>安装；其次要把可执行文件clang-format的路径添加到<code>PATH</code>环境变量中。准备好之后，就可以使用下面这个命令生成格式文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang-format -style=&lt;coding-style&gt; -dump-config &gt; &lt;file-name&gt;</span><br></pre></td></tr></table></figure></p>
+<p>可以使用<code>clang-format -help</code>命令查看各个参数的含义，<code>-style</code>指出要导出的格式文件<code>file-name</code>是基于那种编码样式，当前可指定的有LLVM，Google，Chromium，Mozilla，WebKit。<code>file-name</code>一般命名为<code>.clang-format</code>。</p>
+<h2 id="自定义样式"><a href="#自定义样式" class="headerlink" title="自定义样式"></a>自定义样式</h2><p>以Google样式举例，其中的大多数参数不需要修改，只有其中的几个参数需要按照自己的习惯进行修改，因为参数太多，没有必要一次性全部都理解。最好的方法就是格式化一个文件，看哪些地方不符合自己的要求，再修改对应的参数。举个例子，打开上一步生成的<code>.clang-fromat</code>文件，找到下面几行并修改成对应的参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># private public protected访问控制修饰符的偏移</span><br><span class="line">AccessModifierOffset: -4</span><br><span class="line"></span><br><span class="line"># 构造函数的初始化列表的缩进宽度</span><br><span class="line">ConstructorInitializerIndentWidth: 8</span><br><span class="line"></span><br><span class="line"># 延续的行的缩进宽度</span><br><span class="line">ContinuationIndentWidth: 8</span><br><span class="line"></span><br><span class="line"># 缩进的宽度</span><br><span class="line">IndentWidth:     4</span><br><span class="line"></span><br><span class="line"># tab的宽度</span><br><span class="line">TabWidth:        4</span><br></pre></td></tr></table></figure></p>
+<p>更多参数的中文解释可以参考<a href="https://blog.csdn.net/softimite_zifeng/article/details/78357898" target="_blank" rel="noopener">Clang-Format格式化选项介绍</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>刚开始接触一个自己不熟悉的工具，可以以最简单的使用方式开始慢慢熟悉开始，不要一口气吞下一头大象，等这些简单的功能不能满足你的需求时，再进一步探索它更强大的功能。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>[1] <a href="https://www.cnblogs.com/larryzeal/p/5617196.html" target="_blank" rel="noopener">Qt Creater中Clang-format的使用</a></p>
 
       
     </div>
@@ -429,9 +415,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Xcode-Templates/" rel="tag"># Xcode Templates</a>
+            <a href="/tags/C-C/" rel="tag"># C/C++</a>
           
-            <a href="/tags/LearnOpenGL/" rel="tag"># LearnOpenGL</a>
+            <a href="/tags/代码格式化/" rel="tag"># 代码格式化</a>
+          
+            <a href="/tags/Clang-Format/" rel="tag"># Clang-Format</a>
           
         </div>
       
@@ -444,15 +432,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/07/15/Linux音频采集/" rel="next" title="Linux音频采集">
+                <i class="fa fa-chevron-left"></i> Linux音频采集
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/08/Linux-Screen-Capture/" rel="prev" title="Linux Screen Capture">
-                Linux Screen Capture <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -620,7 +608,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装GLFW"><span class="nav-number">1.1.</span> <span class="nav-text">安装GLFW</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在线生产GLAD"><span class="nav-number">1.2.</span> <span class="nav-text">在线生产GLAD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Xcode"><span class="nav-number">1.3.</span> <span class="nav-text">安装Xcode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Xcode"><span class="nav-number">1.4.</span> <span class="nav-text">配置Xcode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用模板"><span class="nav-number">2.</span> <span class="nav-text">使用模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#导出格式文件"><span class="nav-number">1.</span> <span class="nav-text">导出格式文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义样式"><span class="nav-number">2.</span> <span class="nav-text">自定义样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
             
 
           </div>
