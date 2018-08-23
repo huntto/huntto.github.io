@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文主要介绍在Android中使用OpenSLES提供native接口播放PCM音频。已经有现成的java类AudioTrack可以使用，为什么要使用OpenSLES？有些时候需要在native层接收音频流，如果把音频流传到java层，再使用Android java API播放音频流，那么native层和java层之间传递数据需要花费一定的时间（虽然不是很大），既然native层有API就没有必要">
+<meta name="keywords" content="Android,OpenSLES,PCM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android中使用OpenSLES播放PCM音频">
+<meta property="og:url" content="http://huntto.me/2018/08/23/Android中使用OpenSLES播放PCM音频/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="本文主要介绍在Android中使用OpenSLES提供native接口播放PCM音频。已经有现成的java类AudioTrack可以使用，为什么要使用OpenSLES？有些时候需要在native层接收音频流，如果把音频流传到java层，再使用Android java API播放音频流，那么native层和java层之间传递数据需要花费一定的时间（虽然不是很大），既然native层有API就没有必要">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-23T14:55:21.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android中使用OpenSLES播放PCM音频">
+<meta name="twitter:description" content="本文主要介绍在Android中使用OpenSLES提供native接口播放PCM音频。已经有现成的java类AudioTrack可以使用，为什么要使用OpenSLES？有些时候需要在native层接收音频流，如果把音频流传到java层，再使用Android java API播放音频流，那么native层和java层之间传递数据需要花费一定的时间（虽然不是很大），既然native层有API就没有必要">
+
+
+
+
+
+
+  <link rel="canonical" href="http://huntto.me/2018/08/23/Android中使用OpenSLES播放PCM音频/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android中使用OpenSLES播放PCM音频 | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/08/23/Android中使用OpenSLES播放PCM音频/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android中使用OpenSLES播放PCM音频
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-08-23 22:54:19 / Modified: 22:55:21" itemprop="dateCreated datePublished" datetime="2018-08-23T22:54:19+08:00">2018-08-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/音视频/" itemprop="url" rel="index"><span itemprop="name">音视频</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍在Android中使用<a href="https://www.khronos.org/opensles/" target="_blank" rel="noopener">OpenSLES</a>提供native接口播放PCM音频。已经有现成的java类<a href="https://developer.android.com/reference/android/media/AudioTrack" target="_blank" rel="noopener">AudioTrack</a>可以使用，为什么要使用OpenSLES？有些时候需要在native层接收音频流，如果把音频流传到java层，再使用Android java API播放音频流，那么native层和java层之间传递数据需要花费一定的时间（虽然不是很大），既然native层有API就没有必要使用java层的API了。</p>
+<blockquote>
+<p>那为什么不在java层接收音频流呢？网络连接与接收数据部分的代码用java实现就不方便移植到其他平台。</p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ol>
+<li><strong>开发环境</strong> Android Studio是必备的，其次ndk-bundle也是需要的。</li>
+<li><strong>Android设备</strong> 一部扬声器正常的Android手机或者平板。</li>
+<li><strong>PCM音频</strong> 如果没有现成的录音设备，可以使用ffmpeg将mp3文件转换为PCM文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i your_audio.mp3 -f s16le -ar 44100 -ac 2 -acodec pcm_s16le your_audio.pcm</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果没有ffmpeg，在Mac上可以使用<code>brew install ffmpeg</code>进行安装，或者下载<a href="http://ffmpeg.org/" target="_blank" rel="noopener">ffmpeg</a>源码自行编译。</p>
+<h2 id="支持C"><a href="#支持C" class="headerlink" title="支持C++"></a>支持C++</h2><p><strong>方式一</strong> 在建立工程时确认勾选或选择了如下选项</p>
+<ul>
+<li>Include C++ support</li>
+<li>C++ Standard C++11</li>
+</ul>
+<p><strong>方式二</strong> 在Module的build.gradle文件中添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    ...</span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        ...</span><br><span class="line">        externalNativeBuild &#123;</span><br><span class="line">            cmake &#123;</span><br><span class="line">                cppFlags &quot;-std=c++11 -frtti -fexceptions&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    externalNativeBuild &#123;</span><br><span class="line">        cmake &#123;</span><br><span class="line">            path &quot;src/main/cpp/CMakeLists.txt&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不过要确认<code>path &quot;src/main/cpp/CMakeLists.txt&quot;</code>指定的地方确实存在<code>CMakeLists.txt</code>文件。</p>
+<h2 id="申明native方法"><a href="#申明native方法" class="headerlink" title="申明native方法"></a>申明native方法</h2><p>要实现的功能非常简单。提供两个jni接口<code>start</code>和<code>stop</code>控制播放PCM音频：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line"></span><br><span class="line">    // Used to load the &apos;native-lib&apos; library on application startup.</span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(&quot;native-player&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    private native void start(AssetManager assetManager, String filename);</span><br><span class="line"></span><br><span class="line">    private native void stop();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要把事先准备好的PCM文件放到assets目录下。然后通过<code>start</code>方法把名称传到native层。</p>
+<h2 id="native方法实现"><a href="#native方法实现" class="headerlink" title="native方法实现"></a>native方法实现</h2><p>先来看一下<code>start</code>方法的实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">static FILE *pcmFile;</span><br><span class="line">static bool running;</span><br><span class="line">static std::thread readThread;</span><br><span class="line">static PcmPlayer pcmPlayer;</span><br><span class="line">...</span><br><span class="line">extern &quot;C&quot; JNIEXPORT void JNICALL</span><br><span class="line">Java_me_huntto_openslespcmplayer_MainActivity_start(JNIEnv *env,</span><br><span class="line">                                                    jobject /* object */,</span><br><span class="line">                                                    jobject assetMgr,</span><br><span class="line">                                                    jstring filename) &#123;</span><br><span class="line">    android_fopen_set_asset_manager(AAssetManager_fromJava(env, assetMgr));</span><br><span class="line">    // convert Java string to UTF-8</span><br><span class="line">    const char *utf8 = env-&gt;GetStringUTFChars(filename, NULL);</span><br><span class="line">    assert(NULL != utf8);</span><br><span class="line"></span><br><span class="line">    // open the file to play</span><br><span class="line">    pcmFile = android_fopen(utf8, &quot;rb&quot;);</span><br><span class="line">    if (pcmFile == NULL) &#123;</span><br><span class="line">        LOGE(&quot;Can not open file:%s&quot;, utf8);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pcmPlayer.Init(2, 44100, 16);</span><br><span class="line">    running = true;</span><br><span class="line">    readThread = std::thread(ReadPcmLoop);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>android_fopen_set_asset_manager</code>和<code>android_fopen</code>方法是使用googlesamples中的实现<a href="https://github.com/googlesamples/android-ndk/blob/master/native-media/app/src/main/cpp/android_fopen.h" target="_blank" rel="noopener">android_fopen.h</a>和<a href="https://github.com/googlesamples/android-ndk/blob/master/native-media/app/src/main/cpp/android_fopen.c" target="_blank" rel="noopener">android_fopen.c</a>。<code>PcmPlayer</code>的实现在后面介绍。<code>pcmPlayer.Init(2, 44100, 16)</code>中的2是声道数，44100为采样率，16表示一个采样占16bit。<code>readThread</code>不断从文件中读取PCM数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">const size_t kBufferSize = 1024 * 8;</span><br><span class="line">static std::vector&lt;uint8_t&gt; buffer(kBufferSize);</span><br><span class="line"></span><br><span class="line">static void ReadPcmLoop() &#123;</span><br><span class="line">    while (running &amp;&amp; !feof(pcmFile)) &#123;</span><br><span class="line">        fread(buffer.data(), buffer.size(), 1, pcmFile);</span><br><span class="line">        pcmPlayer.FeedPcmData(buffer.data(), buffer.size());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pcmPlayer.Stop();</span><br><span class="line">    pcmPlayer.Release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里使用了<code>std::thread</code>，所以要在前面添加C++11的支持。</p>
+<blockquote>
+<p>为什么不使用<code>pthread</code>呢？因为<code>std::thread</code>的可移植性更好，且使用姿势更简单。</p>
+</blockquote>
+<p>再来看看<code>stop</code>方法的实现就更简单了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">extern &quot;C&quot; JNIEXPORT void JNICALL</span><br><span class="line">Java_me_huntto_openslespcmplayer_MainActivity_stop(JNIEnv * /* env */,</span><br><span class="line">                                                   jobject /* object */) &#123;</span><br><span class="line">    running = false;</span><br><span class="line">    if (readThread.joinable()) &#123;</span><br><span class="line">        readThread.join();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下面将主要介绍PcmPlayer的实现。</p>
+<h2 id="使用OpenSLES实现PcmPlayer"><a href="#使用OpenSLES实现PcmPlayer" class="headerlink" title="使用OpenSLES实现PcmPlayer"></a>使用OpenSLES实现PcmPlayer</h2><p>要把PcmPlayer设计成什么样呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">class PcmPlayer &#123;</span><br><span class="line">public:</span><br><span class="line">    PcmPlayer();</span><br><span class="line"></span><br><span class="line">    ~PcmPlayer() &#123;</span><br><span class="line">        Release();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void Start();</span><br><span class="line"></span><br><span class="line">    void Stop();</span><br><span class="line"></span><br><span class="line">    void FeedPcmData(uint8_t *pcm, size_t size);</span><br><span class="line"></span><br><span class="line">    void Init(SLuint32 channels,</span><br><span class="line">              SLuint32 sampleRate,</span><br><span class="line">              SLuint32 bitsPerSample);</span><br><span class="line"></span><br><span class="line">    void Release();</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>Start</code>开始播放；但是<code>Start</code>并不是真正的开始播放，需要不断的调用<code>FeedPcmData</code>添加数据，如果添加的数据速度大于播放的速度会阻塞，这就是前面为什么要新开一个线程来读取PCM数据；<code>Stop</code>方法停止播放；不过在调用前面几个方法之前要先调用<code>Init</code>进行初始化。那么先来看看<code>Init</code>方法是怎么实现的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">class PcmPlayer &#123;</span><br><span class="line">...</span><br><span class="line">private:</span><br><span class="line">    struct PcmBufferPool;</span><br><span class="line">    struct PcmBufferBlockingQueue;</span><br><span class="line"></span><br><span class="line">    SLObjectItf engineObject;</span><br><span class="line">    SLEngineItf engineEngine;</span><br><span class="line">    SLObjectItf outputMixObject;</span><br><span class="line">    SLObjectItf playerObject;</span><br><span class="line">    SLPlayItf playerPlay;</span><br><span class="line">    SLAndroidSimpleBufferQueueItf audioBufferQueue;</span><br><span class="line"></span><br><span class="line">    std::shared_ptr&lt;PcmBufferPool&gt; pcmBufferPool;</span><br><span class="line">    std::shared_ptr&lt;PcmBufferBlockingQueue&gt; pcmBufferBlockingQueue;</span><br><span class="line"></span><br><span class="line">    typedef std::vector&lt;uint8_t&gt; PcmBuffer;</span><br><span class="line">    PcmBuffer pcmBuffer;</span><br><span class="line">    bool callBacked;</span><br><span class="line"></span><br><span class="line">    friend void BufferQueueCallback(SLAndroidSimpleBufferQueueItf bufferQueue, void *pcmPlayer);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void PcmPlayer::Init(SLuint32 channels,</span><br><span class="line">                     SLuint32 sampleRate,</span><br><span class="line">                     SLuint32 bitsPerSample) &#123;</span><br><span class="line">    SLresult result;</span><br><span class="line">    // init engine</span><br><span class="line">    result = slCreateEngine(&amp;engineObject, 0, nullptr, 0, nullptr, nullptr);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line">    result = (*engineObject)-&gt;Realize(engineObject, SL_BOOLEAN_FALSE);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line">    result = (*engineObject)-&gt;GetInterface(engineObject, SL_IID_ENGINE, &amp;engineEngine);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line"></span><br><span class="line">    //init output mix</span><br><span class="line">    result = (*engineEngine)-&gt;CreateOutputMix(engineEngine, &amp;outputMixObject, 0, 0,</span><br><span class="line">                                              0);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line">    result = (*outputMixObject)-&gt;Realize(outputMixObject, SL_BOOLEAN_FALSE);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line"></span><br><span class="line">    //init player</span><br><span class="line">    SLDataLocator_OutputMix outputMix = &#123;SL_DATALOCATOR_OUTPUTMIX, outputMixObject&#125;;</span><br><span class="line">    SLDataLocator_AndroidSimpleBufferQueue dataSourceQueue = &#123;</span><br><span class="line">            SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE,</span><br><span class="line">            2&#125;;</span><br><span class="line"></span><br><span class="line">    SLDataFormat_PCM dataSourceFormat = &#123;</span><br><span class="line">            SL_DATAFORMAT_PCM,</span><br><span class="line">            channels,</span><br><span class="line">            sampleRate * 1000,</span><br><span class="line">            bitsPerSample,</span><br><span class="line">            bitsPerSample,</span><br><span class="line">            channels == 1 ? SL_SPEAKER_FRONT_CENTER</span><br><span class="line">                          : SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT,</span><br><span class="line">            SL_BYTEORDER_LITTLEENDIAN</span><br><span class="line">    &#125;;</span><br><span class="line">    SLDataSource dataSource = &#123;&amp;dataSourceQueue, &amp;dataSourceFormat&#125;;</span><br><span class="line">    SLDataSink dataSink = &#123;&amp;outputMix, NULL&#125;;</span><br><span class="line">    const SLInterfaceID ids[] = &#123;SL_IID_BUFFERQUEUE&#125;;</span><br><span class="line">    const SLboolean reqs[] = &#123;SL_BOOLEAN_TRUE&#125;;</span><br><span class="line"></span><br><span class="line">    result = (*engineEngine)-&gt;CreateAudioPlayer(engineEngine, &amp;playerObject, &amp;dataSource, &amp;dataSink,</span><br><span class="line">                                                1, ids,</span><br><span class="line">                                                reqs);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line">    result = (*playerObject)-&gt;Realize(playerObject, SL_BOOLEAN_FALSE);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line"></span><br><span class="line">    result = (*playerObject)-&gt;GetInterface(playerObject, SL_IID_PLAY, &amp;playerPlay);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line"></span><br><span class="line">    result = (*playerObject)-&gt;GetInterface(playerObject, SL_IID_BUFFERQUEUE, &amp;audioBufferQueue);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line">    result = (*audioBufferQueue)-&gt;RegisterCallback(audioBufferQueue, BufferQueueCallback, this);</span><br><span class="line">    assert(result == SL_RESULT_SUCCESS);</span><br><span class="line"></span><br><span class="line">    pcmBufferPool = std::shared_ptr&lt;PcmBufferPool&gt;(new PcmBufferPool);</span><br><span class="line">    pcmBufferBlockingQueue = std::shared_ptr&lt;PcmBufferBlockingQueue&gt;(new PcmBufferBlockingQueue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>方法很长！！其实如果去掉中间的<code>assert</code>检查是不是少了很多。然后本方法大致可以分为四步：</p>
+<ol>
+<li>初始化<code>engineEngine</code>，<code>engineEngine</code>的初始化是后两步顺利进行的前提条件；</li>
+<li>初始化<code>outputMixObject</code>，在本例中之后没有实际的操作；</li>
+<li>初始化<code>playerPlay</code>和<code>audioBufferQueue</code>，<code>playerPlay</code>是控制播放和停止的接口，<code>audioBufferQueue</code>是数据缓存队列；</li>
+<li>初始<code>PcmBuffer</code>的对象池<code>PcmBufferPool</code>和阻塞缓存队列<code>PcmBufferBlockingQueue</code>。</li>
+</ol>
+<p>步骤1-3基本是固定的，在本例中没有太多的发挥空间。其实感觉不需要做太多解释，因为代码足够清晰（OpenSLES是用C实现的面向对象编程），不然就是画蛇添足了。<br>接下来看看<code>PcmBufferPool</code>的实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct PcmPlayer::PcmBufferPool &#123;</span><br><span class="line">    PcmBuffer Get(size_t size) &#123;</span><br><span class="line">        if (pool.empty()) &#123;</span><br><span class="line">            return PcmBuffer(size);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            auto buffer = pool.front();</span><br><span class="line">            pool.pop_front();</span><br><span class="line">            return buffer;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void Return(const PcmBuffer &amp;buffer) &#123;</span><br><span class="line">        pool.push_back(std::move(buffer));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    std::list&lt;PcmBuffer&gt; pool;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>很简单但是并不高效，至少够用。<code>PcmBufferBlockingQueue</code>也有同样的特点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">struct PcmPlayer::PcmBufferBlockingQueue &#123;</span><br><span class="line">    void Enqueue(const PcmBuffer &amp;pcmBuffer, size_t maxSize) &#123;</span><br><span class="line">        std::unique_lock&lt;std::mutex&gt; lock(queue_mutex);</span><br><span class="line">        queue_cond.wait(lock, [this, maxSize] &#123; return queue.size() &lt; maxSize; &#125;);</span><br><span class="line">        queue.push_back(std::move(pcmBuffer));</span><br><span class="line">        queue_cond.notify_one();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PcmBuffer Dequeue() &#123;</span><br><span class="line">        std::unique_lock&lt;std::mutex&gt; lock(queue_mutex);</span><br><span class="line">        queue_cond.wait(lock, [this] &#123; return queue.size() &gt; 0; &#125;);</span><br><span class="line">        auto buffer = queue.front();</span><br><span class="line">        queue.pop_front();</span><br><span class="line">        queue_cond.notify_one();</span><br><span class="line">        return buffer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    std::mutex queue_mutex;</span><br><span class="line">    std::condition_variable queue_cond;</span><br><span class="line">    std::list&lt;PcmBuffer&gt; queue;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>接下来看看本例中比较核心的一个方法<code>BufferQueueCallback</code>，为什么是核心呢？因为它是调用次数最多的几个方法之一。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void BufferQueueCallback(SLAndroidSimpleBufferQueueItf bufferQueue, void *context) &#123;</span><br><span class="line">    PcmPlayer *pcmPlayer = (PcmPlayer *) context;</span><br><span class="line"></span><br><span class="line">    PcmPlayer::PcmBuffer buffer = pcmPlayer-&gt;pcmBufferBlockingQueue-&gt;Dequeue();</span><br><span class="line">    if (pcmPlayer-&gt;pcmBuffer.capacity() &lt; buffer.size()) &#123;</span><br><span class="line">        pcmPlayer-&gt;pcmBuffer.resize(buffer.size());</span><br><span class="line">    &#125;</span><br><span class="line">    memcpy(pcmPlayer-&gt;pcmBuffer.data(), buffer.data(), buffer.size());</span><br><span class="line">    (*bufferQueue)-&gt;Enqueue(bufferQueue, pcmPlayer-&gt;pcmBuffer.data(),</span><br><span class="line">                            static_cast&lt;SLuint32&gt;(buffer.size()));</span><br><span class="line"></span><br><span class="line">    pcmPlayer-&gt;pcmBufferPool-&gt;Return(buffer);</span><br><span class="line">    pcmPlayer-&gt;callBacked = true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个方法在OpenSLES引擎需要填充缓冲时自动回调的，当回调产生时，需要往缓冲队列里面填充PCM数据。而PCM数据是从<code>pcmBufferBlockingQueue</code>里面获取的（<code>BufferQueueCallback</code>可以理解为<code>pcmBufferBlockingQueue</code>的消费者），<code>pcmBufferBlockingQueue</code>需要我们自己维护的。每一个<code>PcmBuffer</code>用完之后都要放回对象池中。再来看看<code>pcmBufferBlockingQueue</code>的生产者。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void PcmPlayer::FeedPcmData(uint8_t *pcm, size_t size) &#123;</span><br><span class="line">    PcmBuffer buffer = pcmBufferPool-&gt;Get(size);</span><br><span class="line">    buffer.resize(size);</span><br><span class="line">    memcpy(buffer.data(), pcm, size);</span><br><span class="line">    pcmBufferBlockingQueue-&gt;Enqueue(buffer, 5);</span><br><span class="line">    if (!callBacked) &#123;</span><br><span class="line">        SLuint32 playState;</span><br><span class="line">        (*playerPlay)-&gt;GetPlayState(playerPlay, &amp;playState);</span><br><span class="line">        if (playState != SL_PLAYSTATE_PLAYING) &#123;</span><br><span class="line">            Start();</span><br><span class="line">        &#125;</span><br><span class="line">        BufferQueueCallback(audioBufferQueue, this);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在<code>FeedPcmData</code>开始时，先要从对象池中获取一个<code>PcmBuffer</code>，拷贝数据，然后放入阻塞队列中，当队列长度大于5时就阻塞。<code>Start</code>和<code>Stop</code>方法就相对简单了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void PcmPlayer::Start() &#123;</span><br><span class="line">    if (playerPlay != nullptr) &#123;</span><br><span class="line">        (*playerPlay)-&gt;SetPlayState(playerPlay, SL_PLAYSTATE_PLAYING);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void PcmPlayer::Stop() &#123;</span><br><span class="line">    if (playerPlay != nullptr) &#123;</span><br><span class="line">        (*playerPlay)-&gt;SetPlayState(playerPlay, SL_PLAYSTATE_STOPPED);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后一个方法<code>Release</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">void PcmPlayer::Release() &#123;</span><br><span class="line">    if (playerObject != nullptr) &#123;</span><br><span class="line">        (*playerObject)-&gt;Destroy(playerObject);</span><br><span class="line">        playerObject = nullptr;</span><br><span class="line">        playerPlay = nullptr;</span><br><span class="line">        audioBufferQueue = nullptr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (outputMixObject != nullptr) &#123;</span><br><span class="line">        (*outputMixObject)-&gt;Destroy(outputMixObject);</span><br><span class="line">        outputMixObject = nullptr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (engineObject != nullptr) &#123;</span><br><span class="line">        (*engineObject)-&gt;Destroy(engineObject);</span><br><span class="line">        engineObject = nullptr;</span><br><span class="line">        engineEngine = nullptr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pcmBufferBlockingQueue = nullptr;</span><br><span class="line">    pcmBufferPool = nullptr;</span><br><span class="line">    callBacked = false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的地方是销毁<code>engineObject</code>之前必须先销毁<code>outputMixObject</code>和<code>playerObject</code>，不然会报错。代码实现了，要让它正常跑起来还不够，因为CMakeLists.txt还没配置好。</p>
+<h2 id="CMakeLists-txt"><a href="#CMakeLists-txt" class="headerlink" title="CMakeLists.txt"></a>CMakeLists.txt</h2><p>在Android中，OpenSLES以动态共享库的方式加载的，ndk-bundle中并没有<code>libOpenSLES.so</code>的，而是在实际的运行设备中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 3.4.1)</span><br><span class="line"></span><br><span class="line">add_library( native-player SHARED</span><br><span class="line">        pcm_player_jni.cpp</span><br><span class="line">        pcm_player.cpp</span><br><span class="line">        android_fopen.c</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">target_link_libraries( native-player</span><br><span class="line">        log</span><br><span class="line">        OpenSLES</span><br><span class="line">        android</span><br><span class="line">        )</span><br></pre></td></tr></table></figure></p>
+<p>完整的项目代码已上传至仓库<a href="https://github.com/huntto/OpenSLESPcmPlayer" target="_blank" rel="noopener">OpenSLESPcmPlayer</a>。</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>在写这篇博客的工程中，感觉整个项目很简单，想着到底有没有必要以博客的形式记录下来，并且文中大部分都是代码块。主要在写的过程中可以加深自己的理解，也可以锻炼自己的文笔（根本谈不上文笔-_-||）。有时候感觉写博客比写代码更难让人理解。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/OpenSLES/" rel="tag"># OpenSLES</a>
+          
+            <a href="/tags/PCM/" rel="tag"># PCM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/27/Clang-Format简单配置/" rel="next" title="Clang-Format简单配置">
+                <i class="fa fa-chevron-left"></i> Clang-Format简单配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持C"><span class="nav-number">2.</span> <span class="nav-text">支持C++</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#申明native方法"><span class="nav-number">3.</span> <span class="nav-text">申明native方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#native方法实现"><span class="nav-number">4.</span> <span class="nav-text">native方法实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用OpenSLES实现PcmPlayer"><span class="nav-number">5.</span> <span class="nav-text">使用OpenSLES实现PcmPlayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMakeLists-txt"><span class="nav-number">6.</span> <span class="nav-text">CMakeLists.txt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后记"><span class="nav-number">7.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
