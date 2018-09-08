@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="JSON（JavaScript Object Notation）是一种轻量级的数据交换格式，易于人阅读和编写，同时也易于机器解析和生成。Gson是Google提供的开源库，可以将Java对象转换为JSON数据，也可以JSON数据转换为Java对象。本文简要介绍Gson库基本使用方法。">
+<meta name="keywords" content="Gson,JSON">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSON解析之Gson">
+<meta property="og:url" content="http://huntto.me/2018/09/08/JSON解析之Gson/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="JSON（JavaScript Object Notation）是一种轻量级的数据交换格式，易于人阅读和编写，同时也易于机器解析和生成。Gson是Google提供的开源库，可以将Java对象转换为JSON数据，也可以JSON数据转换为Java对象。本文简要介绍Gson库基本使用方法。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-09-08T09:52:18.610Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JSON解析之Gson">
+<meta name="twitter:description" content="JSON（JavaScript Object Notation）是一种轻量级的数据交换格式，易于人阅读和编写，同时也易于机器解析和生成。Gson是Google提供的开源库，可以将Java对象转换为JSON数据，也可以JSON数据转换为Java对象。本文简要介绍Gson库基本使用方法。">
+
+
+
+
+
+
+  <link rel="canonical" href="http://huntto.me/2018/09/08/JSON解析之Gson/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>JSON解析之Gson | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/09/08/JSON解析之Gson/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JSON解析之Gson
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-08 17:27:33 / Modified: 17:52:18" itemprop="dateCreated datePublished" datetime="2018-09-08T17:27:33+08:00">2018-09-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/Android/JSON/" itemprop="url" rel="index"><span itemprop="name">JSON</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://www.json.org/" target="_blank" rel="noopener"><strong>JSON</strong></a>（JavaScript Object Notation）是一种轻量级的数据交换格式，易于人阅读和编写，同时也易于机器解析和生成。<a href="https://github.com/google/gson" target="_blank" rel="noopener"><strong>Gson</strong></a>是Google提供的开源库，可以将Java对象转换为JSON数据，也可以JSON数据转换为Java对象。本文简要介绍Gson库基本使用方法。</p>
+<a id="more"></a>
+<h2 id="解析JSON"><a href="#解析JSON" class="headerlink" title="解析JSON"></a>解析JSON</h2><blockquote>
+<p>本例中使用的JSON数据是实际项目中通过<a href="https://github.com/openwrt/luci/wiki/JsonRpcHowTo" target="_blank" rel="noopener">luci</a>获取到的，这里只是作为数据示例。</p>
+</blockquote>
+<p>先以一段简单的Http Response的JSON数据开始：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;: 1,</span><br><span class="line">  &quot;result&quot;: &quot;a5823b98e0dc91cecddb5516e7e85c85&quot;,</span><br><span class="line">  &quot;error&quot;: null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么它对应的Java对象可以表示为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class Response &#123;</span><br><span class="line">    private int id;</span><br><span class="line"></span><br><span class="line">    private String result;</span><br><span class="line"></span><br><span class="line">    private String error;</span><br><span class="line"></span><br><span class="line">    public int getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getResult() &#123;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getError() &#123;</span><br><span class="line">        return error;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Response() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么可以使用Gson将JSON数据解析为<code>Response</code>对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Response parse(String json) &#123;</span><br><span class="line">    Gson gson = new Gson();</span><br><span class="line">    return gson.fromJson(json, Response.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于有些代码规范需要将在变量名前面加上<code>m</code>前缀，那么变量名就和JSON字段名不一样了，这个时候就需要用到注解<code>@SerializedName</code>。将<code>Response</code>类修改为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class Response &#123;</span><br><span class="line">    @SerializedName(&quot;id&quot;)</span><br><span class="line">    private int mId;</span><br><span class="line"></span><br><span class="line">    @SerializedName(&quot;result&quot;)</span><br><span class="line">    private String mResult;</span><br><span class="line"></span><br><span class="line">    @SerializedName(&quot;error&quot;)</span><br><span class="line">    private String mError;</span><br><span class="line"></span><br><span class="line">    public int getId() &#123;</span><br><span class="line">        return mId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getResult() &#123;</span><br><span class="line">        return mResult;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getError() &#123;</span><br><span class="line">        return mError;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Response() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果<code>Response</code>的JSON数据发生了变化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;: 2,</span><br><span class="line">  &quot;result&quot;: null,</span><br><span class="line">  &quot;error&quot;: &#123;</span><br><span class="line">    &quot;message&quot;: &quot;Method not found.&quot;,</span><br><span class="line">    &quot;code&quot;: -32601</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到<code>error</code>字段不为空了。现在需要修改<code>mError</code>的类型：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class Response &#123;</span><br><span class="line">    ...</span><br><span class="line">    @SerializedName(&quot;error&quot;)</span><br><span class="line">    private Error mError;</span><br><span class="line">    </span><br><span class="line">    public Error getError() &#123;</span><br><span class="line">        return mError;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static class Error&#123;</span><br><span class="line">        @SerializedName(&quot;message&quot;)</span><br><span class="line">        private String mMessage;</span><br><span class="line">        @SerializedName(&quot;code&quot;)</span><br><span class="line">        private int mCode;</span><br><span class="line"></span><br><span class="line">        public String getMessage() &#123;</span><br><span class="line">            return mMessage;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public int getCode() &#123;</span><br><span class="line">            return mCode;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样不用修改<code>parse</code>方法也可以解析JSON数据为<code>Response</code>对象了。如果JSON数据<code>result</code>字段发生了变化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;: 2,</span><br><span class="line">  &quot;result&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;band&quot;: &quot;5G&quot;,</span><br><span class="line">      &quot;type&quot;: &quot;mt7612e&quot;,</span><br><span class="line">      &quot;vendor&quot;: &quot;ralink&quot;,</span><br><span class="line">      &quot;autoch&quot;: &quot;2&quot;,</span><br><span class="line">      &quot;.index&quot;: 0,</span><br><span class="line">      &quot;channel&quot;: &quot;0&quot;,</span><br><span class="line">      &quot;.name&quot;: &quot;mt7612e&quot;,</span><br><span class="line">      &quot;.type&quot;: &quot;wifi-device&quot;,</span><br><span class="line">      &quot;.anonymous&quot;: false</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;band&quot;: &quot;2.4G&quot;,</span><br><span class="line">      &quot;type&quot;: &quot;mt7628&quot;,</span><br><span class="line">      &quot;vendor&quot;: &quot;ralink&quot;,</span><br><span class="line">      &quot;.index&quot;: 2,</span><br><span class="line">      &quot;channel&quot;: &quot;0&quot;,</span><br><span class="line">      &quot;.name&quot;: &quot;mt7628&quot;,</span><br><span class="line">      &quot;auotch&quot;: &quot;2&quot;,</span><br><span class="line">      &quot;.type&quot;: &quot;wifi-device&quot;,</span><br><span class="line">      &quot;.anonymous&quot;: false</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;error&quot;: null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到JSON数据的<code>result</code>是一个JSON数组，而前面的<code>result</code>是字符串，如果要兼容前面的JSON解析，首先要修改<code>Response</code>中的<code>mResult</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class Response &#123;</span><br><span class="line">    ...</span><br><span class="line">    @SerializedName(&quot;result&quot;)</span><br><span class="line">    private JsonElement mResult;</span><br><span class="line">    ...</span><br><span class="line">    public JsonElement getResult() &#123;</span><br><span class="line">        return mResult;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其次，在Gson初步解析后需要判断<code>mResult</code>的具体类型来进一步解析：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void parse(String json, ParseCallback callback) &#123;</span><br><span class="line">    Gson gson = new Gson();</span><br><span class="line">    Response response = gson.fromJson(json, Response.class);</span><br><span class="line"></span><br><span class="line">    JsonElement resultElement = response.getResult();</span><br><span class="line">    if (resultElement.isJsonPrimitive()) &#123;</span><br><span class="line">        // parse string</span><br><span class="line">    &#125; else if (resultElement.isJsonArray()) &#123;</span><br><span class="line">        // parse array</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于解析的结果不止一种类型，所以这里用一个回调来返回不同类型的解析结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">interface ParseCallback &#123;</span><br><span class="line">    void onResult(String result);</span><br><span class="line"></span><br><span class="line">    void onResult(List&lt;WifiDevice&gt; devices);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>WifiDevice</code>对应于JSON数组中的具体类型，这里就不给出具体定义了。接下来看看进一步的解析：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">void parse(String json, ParseCallback callback) &#123;</span><br><span class="line">    ...</span><br><span class="line">    if (resultElement.isJsonPrimitive()) &#123;</span><br><span class="line">       String result = resultElement.getAsString();</span><br><span class="line">        if (callback != null) &#123;</span><br><span class="line">            callback.onResult(result);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else if (resultElement.isJsonArray()) &#123;</span><br><span class="line">        List&lt;WifiDevice&gt; devices = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        JsonArray array = resultElement.getAsJsonArray();</span><br><span class="line">        for (JsonElement element : array) &#123;</span><br><span class="line">            WifiDevice device = gson.fromJson(element, WifiDevice.class);</span><br><span class="line">            devices.add(device);</span><br><span class="line">        &#125;</span><br><span class="line">        if (callback != null) &#123;</span><br><span class="line">            callback.onResult(devices);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里仅仅举例解析<code>result</code>字段是两种类型的情况，还有当<code>result</code>为不同元素类型的数组，这个时候可以定义不同的<code>Response</code>类（假设事先知道<code>result</code>字段的具体类型）。</p>
+<h2 id="生成JSON数据"><a href="#生成JSON数据" class="headerlink" title="生成JSON数据"></a>生成JSON数据</h2><p>相对于JSON解析，把类序列化为JSON数据就简单多了。如果有一个成绩单的类需要生成JSON数据，先来看一下<code>Transcript</code>类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">public class Transcript &#123;</span><br><span class="line"></span><br><span class="line">    @SerializedName(&quot;name&quot;)</span><br><span class="line">    private String mName;</span><br><span class="line"></span><br><span class="line">    @SerializedName(&quot;grade&quot;)</span><br><span class="line">    private int mGrade;</span><br><span class="line"></span><br><span class="line">    @SerializedName(&quot;class&quot;)</span><br><span class="line">    private int mClass;</span><br><span class="line"></span><br><span class="line">    @SerializedName(&quot;subject_scores&quot;)</span><br><span class="line">    private EnumMap&lt;Subject, Integer&gt; mSubjectScores = new EnumMap&lt;Subject, Integer&gt;(Subject.class);</span><br><span class="line"></span><br><span class="line">    private Transcript() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Transcript(String name, int grade, int clazz) &#123;</span><br><span class="line">        mName = name;</span><br><span class="line">        mGrade = grade;</span><br><span class="line">        mClass = clazz;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addSubjectScore(Subject subject, int score) &#123;</span><br><span class="line">        mSubjectScores.put(subject, score);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    enum Subject &#123;</span><br><span class="line">        CHINESE,</span><br><span class="line">        ENGLISH,</span><br><span class="line">        MATH,</span><br><span class="line">        PHYSICAL</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接着通过Gson生成JSON数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Gson gson = new Gson();</span><br><span class="line">Transcript transcript = new Transcript(&quot;Huntto&quot;, 3, 17);</span><br><span class="line">transcript.addSubjectScore(Transcript.Subject.CHINESE, 80);</span><br><span class="line">transcript.addSubjectScore(Transcript.Subject.ENGLISH, 85);</span><br><span class="line">transcript.addSubjectScore(Transcript.Subject.MATH, 98);</span><br><span class="line">transcript.addSubjectScore(Transcript.Subject.PHYSICAL, 83);</span><br><span class="line">String json = gson.toJson(transcript, Transcript.class);</span><br></pre></td></tr></table></figure></p>
+<p>生成的JSON数据为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;class&quot;: 17, </span><br><span class="line">  &quot;grade&quot;: 3, </span><br><span class="line">  &quot;name&quot;: &quot;Huntto&quot;, </span><br><span class="line">  &quot;subject_scores&quot;: &#123;</span><br><span class="line">    &quot;CHINESE&quot;: 80, </span><br><span class="line">    &quot;ENGLISH&quot;: 85, </span><br><span class="line">    &quot;MATH&quot;: 98, </span><br><span class="line">    &quot;PHYSICAL&quot;: 83</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>虽然成功了，但是不知道能不能再次通过Gson解析：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Gson gson = new Gson();</span><br><span class="line">Transcript transcript = new Transcript(&quot;Huntto&quot;, 3, 17);</span><br><span class="line">...</span><br><span class="line">String json = gson.toJson(transcript, Transcript.class);</span><br><span class="line"></span><br><span class="line">Transcript parsedTranscript = gson.fromJson(json, Transcript.class);</span><br></pre></td></tr></table></figure>
+<p>解析不成功，报错了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.lang.IllegalArgumentException: field me.huntto.gsondemo.Transcript.mSubjectScores has type java.util.EnumMap, got java.util.LinkedHashMap</span><br><span class="line">    at java.lang.reflect.Field.set(Native Method)</span><br></pre></td></tr></table></figure></p>
+<p>意思是不能用<code>EnumMap</code>，需要使用<code>LinkedHashMap</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Transcript &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    @SerializedName(&quot;subject_scores&quot;)</span><br><span class="line">    private HashMap&lt;String, Integer&gt; mSubjectScores = new LinkedHashMap&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    public void addSubjectScore(Subject subject, int score) &#123;</span><br><span class="line">        mSubjectScores.put(subject.name(), score);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将<code>EnumMap</code>换成<code>LinkedHashMap</code>和<code>HashMap</code>都可以成功解析。</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>好记性不如烂笔头。把每次用过的知识点总结一下记录下来，就不用每次需要使用的时候去百度或者Google（没准搜出来的都是广告）。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>[1] <a href="https://www.jianshu.com/p/fc5c9cdf3aab" target="_blank" rel="noopener">Gson全解析（上）-Gson基础</a><br>[2] <a href="https://github.com/google/gson/blob/master/UserGuide.md" target="_blank" rel="noopener">Gson User Guide</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Gson/" rel="tag"># Gson</a>
+          
+            <a href="/tags/JSON/" rel="tag"># JSON</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/01/Android中Java类加载耗时问题/" rel="next" title="Android中Java类加载耗时问题">
+                <i class="fa fa-chevron-left"></i> Android中Java类加载耗时问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析JSON"><span class="nav-number">1.</span> <span class="nav-text">解析JSON</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成JSON数据"><span class="nav-number">2.</span> <span class="nav-text">生成JSON数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后记"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
