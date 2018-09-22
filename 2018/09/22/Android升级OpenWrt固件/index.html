@@ -108,29 +108,25 @@
 
 
 
-  <meta name="description" content="最近通过LearnOpenGL教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项">
-<meta name="keywords" content="Xcode Templates,LearnOpenGL">
+  <meta name="description" content="有这么一个需求，需要通过Android升级OpenWrt的固件（Firmware）。参考OpenWrt提供的升级方案，可以使用SSH的scp命令将固件上传到路由器的/tmp目录下，然后执行命令sysupgrade -v /tmp/firmware_name.bin升级固件。">
+<meta name="keywords" content="Android,OpenWrt固件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Xcode-LearnOpenGL-Templates">
-<meta property="og:url" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/index.html">
+<meta property="og:title" content="Android升级OpenWrt固件">
+<meta property="og:url" content="http://huntto.me/2018/09/22/Android升级OpenWrt固件/index.html">
 <meta property="og:site_name" content="且行且记">
-<meta property="og:description" content="最近通过LearnOpenGL教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项">
+<meta property="og:description" content="有这么一个需求，需要通过Android升级OpenWrt的固件（Firmware）。参考OpenWrt提供的升级方案，可以使用SSH的scp命令将固件上传到路由器的/tmp目录下，然后执行命令sysupgrade -v /tmp/firmware_name.bin升级固件。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/custom_paths.png">
-<meta property="og:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/new_project.png">
-<meta property="og:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/result.png">
-<meta property="og:updated_time" content="2018-09-01T09:28:04.965Z">
+<meta property="og:updated_time" content="2018-09-22T08:03:04.940Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Xcode-LearnOpenGL-Templates">
-<meta name="twitter:description" content="最近通过LearnOpenGL教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项">
-<meta name="twitter:image" content="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/custom_paths.png">
+<meta name="twitter:title" content="Android升级OpenWrt固件">
+<meta name="twitter:description" content="有这么一个需求，需要通过Android升级OpenWrt的固件（Firmware）。参考OpenWrt提供的升级方案，可以使用SSH的scp命令将固件上传到路由器的/tmp目录下，然后执行命令sysupgrade -v /tmp/firmware_name.bin升级固件。">
 
 
 
 
 
 
-  <link rel="canonical" href="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/"/>
+  <link rel="canonical" href="http://huntto.me/2018/09/22/Android升级OpenWrt固件/"/>
 
 
 
@@ -140,7 +136,7 @@
   };
 </script>
 
-  <title>Xcode-LearnOpenGL-Templates | 且行且记</title>
+  <title>Android升级OpenWrt固件 | 且行且记</title>
   
 
 
@@ -293,7 +289,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/03/17/Xcode-LearnOpenGL-Templates/">
+    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/09/22/Android升级OpenWrt固件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Huntto">
@@ -310,7 +306,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Xcode-LearnOpenGL-Templates
+          <h1 class="post-title" itemprop="name headline">Android升级OpenWrt固件
               
             
           </h1>
@@ -335,24 +331,12 @@
                 
               
 
-              <time title="Created: 2018-03-17 22:28:14" itemprop="dateCreated datePublished" datetime="2018-03-17T22:28:14+08:00">2018-03-17</time>
+              <time title="Created: 2018-09-22 15:56:44 / Modified: 16:03:04" itemprop="dateCreated datePublished" datetime="2018-09-22T15:56:44+08:00">2018-09-22</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2018-09-01 17:28:04" itemprop="dateModified" datetime="2018-09-01T17:28:04+08:00">2018-09-01</time>
               
             
           </span>
@@ -369,7 +353,14 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/OpenWrt/" itemprop="url" rel="index"><span itemprop="name">OpenWrt</span></a></span>
 
                 
                 
@@ -403,20 +394,20 @@
       
 
       
-        <p>最近通过<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">LearnOpenGL</a>教程学习OpenGL，里面有详细的例程帮助我快速了解OpenGL的编程思路。刚开始在教程的每一小节中，我都按照教程里面讲解的步骤一步一步的敲击着代码，但是当我熟悉之后，发现每创建一个Xcode项目，我必须每一次都要设置相同的编译选项和参数，并且需要写重复的GLFW代码。因此我写了一个OpenGL的Xcode的项目模板，利用这个模板，在每次创建OpenGL的Xcode项目时可以节省一些时间。</p>
+        <p>有这么一个需求，需要通过Android升级<a href="https://openwrt.org/" target="_blank" rel="noopener">OpenWrt</a>的固件（Firmware）。参考OpenWrt提供的<a href="https://openwrt.org/docs/guide-user/installation/generic.sysupgrade" target="_blank" rel="noopener">升级方案</a>，可以使用<a href="https://www.ssh.com/ssh/" target="_blank" rel="noopener">SSH</a>的<code>scp</code>命令将固件上传到路由器的/tmp目录下，然后执行命令<code>sysupgrade -v /tmp/firmware_name.bin</code>升级固件。</p>
 <a id="more"></a>
-<hr>
-<p>接下来我会介绍怎么使用<a href="https://github.com/huntto/Xcode-LearnOpenGL-Templates" target="_blank" rel="noopener">这个模板</a>。</p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>使用Xcode编写OpenGL程序需要用到<a href="http://www.glfw.org/index.html" target="_blank" rel="noopener">GLFW</a>和<a href="http://glad.dav1d.de/" target="_blank" rel="noopener">GLAD</a>。</p>
-<h3 id="安装GLFW"><a href="#安装GLFW" class="headerlink" title="安装GLFW"></a>安装GLFW</h3><p>执行shell命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install glfw</span><br></pre></td></tr></table></figure></p>
-<p>安装成功后，可以在/usr/local/Cellar/glfw目录下找到对应版本的头文件和库文件。</p>
-<h3 id="在线生产GLAD"><a href="#在线生产GLAD" class="headerlink" title="在线生产GLAD"></a>在线生产GLAD</h3><p>在GLAD的在线服务网站上，Language选择C/C++，Specification选择OpenGL，API/gl选择3.3，Profile选择Core，Options勾选Generate a loader。点击GENERATE生成库文件。将glad.zip解压到$HOME目录下。</p>
-<h3 id="安装Xcode"><a href="#安装Xcode" class="headerlink" title="安装Xcode"></a>安装Xcode</h3><p>通过App Store下载<a href="https://developer.apple.com/download/" target="_blank" rel="noopener">Xcode</a>。</p>
-<h3 id="配置Xcode"><a href="#配置Xcode" class="headerlink" title="配置Xcode"></a>配置Xcode</h3><p>选择Xcode-&gt;Preferences…-&gt;Locations-&gt;Custom Paths，配置如下：<br><img src="custom_paths.png" alt="custom_paths"></p>
-<h2 id="使用模板"><a href="#使用模板" class="headerlink" title="使用模板"></a>使用模板</h2><p>执行shell命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/huntto/Xcode-LearnOpenGL-Templates ~/Library/Developer/Xcode/Templates/Project\ Templates/Mac/LearnOpenGL</span><br></pre></td></tr></table></figure></p>
-<p>创建项目时，可以看到如下的模板选项：<br><img src="new_project.png" alt="new_project"><br>创建完项目后，直接点击运行后的结果如下图所示：<br><img src="result.png" alt="result"></p>
-<hr>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>[1]. <a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">LearnOpenGL</a><br>[2]. <a href="https://www.telerik.com/blogs/how-to-create-custom-project-templates-in-xcode-7" target="_blank" rel="noopener">How to Create Custom Project Templates in Xcode 7</a></p>
+<h2 id="Android中使用SSH"><a href="#Android中使用SSH" class="headerlink" title="Android中使用SSH"></a>Android中使用SSH</h2><blockquote>
+<p>The SSH protocol uses encryption to secure the connection between a client and a server. All user authentication, commands, output, and file transfers are encrypted to protect against attacks in the network.</p>
+</blockquote>
+<p>站在巨人的肩膀上，不要重复造轮子。<a href="http://www.ganymed.ethz.ch/ssh2/" target="_blank" rel="noopener">Ganymed SSH-2</a>是一个实现了SSH-2协议的Java库，解压<a href="http://www.ganymed.ethz.ch/ssh2/ganymed-ssh2-build210.zip" target="_blank" rel="noopener">ganymed-ssh2-build210.zip</a>，将里面的jar包导入自己的Android项目的<code>libs</code>目录下，并在Module的build.gradle文件中添加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    implementation fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)</span><br><span class="line">    ... ...</span><br><span class="line">    implementation files(&apos;libs/ganymed-ssh2-build210.jar&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个时候就可以在项目中愉快地使用SSH了。</p>
+<h2 id="升级固件"><a href="#升级固件" class="headerlink" title="升级固件"></a>升级固件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">public static boolean upgradeFirmware(String hostname, String username,String password ,String firmwarePath) &#123;</span><br><span class="line">    File firmware = new File(firmwarePath);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        /* Create a connection instance */</span><br><span class="line">        Connection conn = new Connection(hostname);</span><br><span class="line"></span><br><span class="line">        /* Now connect */</span><br><span class="line">        conn.connect();</span><br><span class="line"></span><br><span class="line">        /* Authenticate.</span><br><span class="line">         * If you get an IOException saying something like</span><br><span class="line">         * &quot;Authentication method password not supported by the server at this stage.&quot;</span><br><span class="line">         * then please check the FAQ.</span><br><span class="line">         */</span><br><span class="line">        boolean isAuthenticated = conn.authenticateWithPassword(username, password);</span><br><span class="line"></span><br><span class="line">        if (!isAuthenticated)</span><br><span class="line">            throw new IOException(&quot;Authentication failed.&quot;);</span><br><span class="line"></span><br><span class="line">        /* Create a scp client */</span><br><span class="line">        SCPClient scpClient = conn.createSCPClient();</span><br><span class="line"></span><br><span class="line">        /* Upload firmware file to remote&apos;s /tmp */</span><br><span class="line">        scpClient.put(firmware.getAbsolutePath(), &quot;/tmp&quot;);</span><br><span class="line"></span><br><span class="line">        /* Create a session */</span><br><span class="line">        Session session = conn.openSession();</span><br><span class="line"></span><br><span class="line">        /* Upgrade firmware */</span><br><span class="line">        session.execCommand(&quot;sysupgrade -v /tmp/&quot; + firmware.getName());</span><br><span class="line"></span><br><span class="line">        /*</span><br><span class="line">         * This basic example does not handle stderr, which is sometimes dangerous</span><br><span class="line">         * (please read the FAQ).</span><br><span class="line">         */</span><br><span class="line">        InputStream stdout = new StreamGobbler(session.getStdout());</span><br><span class="line"></span><br><span class="line">        BufferedReader br = new BufferedReader(new InputStreamReader(stdout));</span><br><span class="line"></span><br><span class="line">        while (true) &#123;</span><br><span class="line">            String line = br.readLine();</span><br><span class="line">            if (line == null)</span><br><span class="line">                break;</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /* Show exit status, if available (otherwise &quot;null&quot;) */</span><br><span class="line">        System.out.println(&quot;ExitCode: &quot; + session.getExitStatus());</span><br><span class="line"></span><br><span class="line">        /* Close this session */</span><br><span class="line">        session.close();</span><br><span class="line"></span><br><span class="line">        /* Close the connection */</span><br><span class="line">        conn.close();</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        e.printStackTrace(System.err);</span><br><span class="line">        </span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码很简单，这里就不做过多解释了。但是升级固件并不一定会成功，如路由器的空间不足以存放新的固件时。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ol>
+<li><a href="https://chenjy1225.github.io/2018/05/03/android-scp/" target="_blank" rel="noopener">在Android 中实现scp操作</a></li>
+<li><a href="https://openwrt.org/docs/guide-user/installation/generic.sysupgrade" target="_blank" rel="noopener">OpenWrt OS upgrade procedure (LuCI or sysupgrade)</a></li>
+</ol>
 
       
     </div>
@@ -437,9 +428,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Xcode-Templates/" rel="tag"># Xcode Templates</a>
+            <a href="/tags/Android/" rel="tag"># Android</a>
           
-            <a href="/tags/LearnOpenGL/" rel="tag"># LearnOpenGL</a>
+            <a href="/tags/OpenWrt固件/" rel="tag"># OpenWrt固件</a>
           
         </div>
       
@@ -452,15 +443,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/09/08/JSON解析之Gson/" rel="next" title="JSON解析之Gson">
+                <i class="fa fa-chevron-left"></i> JSON解析之Gson
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/08/Linux-Screen-Capture/" rel="prev" title="Linux Screen Capture">
-                Linux Screen Capture <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -652,7 +643,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装GLFW"><span class="nav-number">1.1.</span> <span class="nav-text">安装GLFW</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在线生产GLAD"><span class="nav-number">1.2.</span> <span class="nav-text">在线生产GLAD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Xcode"><span class="nav-number">1.3.</span> <span class="nav-text">安装Xcode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Xcode"><span class="nav-number">1.4.</span> <span class="nav-text">配置Xcode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用模板"><span class="nav-number">2.</span> <span class="nav-text">使用模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android中使用SSH"><span class="nav-number">1.</span> <span class="nav-text">Android中使用SSH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级固件"><span class="nav-number">2.</span> <span class="nav-text">升级固件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
             
 
           </div>
