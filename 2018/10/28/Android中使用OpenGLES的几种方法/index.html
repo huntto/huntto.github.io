@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="有这么一个需求，需要通过Android升级OpenWrt的固件（Firmware）。参考OpenWrt提供的升级方案，可以使用SSH的scp命令将固件上传到路由器的/tmp目录下，然后执行命令sysupgrade -v /tmp/firmware_name.bin升级固件。">
-<meta name="keywords" content="Android,OpenWrt固件">
+  <meta name="description" content="在Android中使用OpenGLES主要有几种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
+<meta name="keywords" content="Android,OpenGL ES">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android升级OpenWrt固件">
-<meta property="og:url" content="http://huntto.me/2018/09/22/Android升级OpenWrt固件/index.html">
+<meta property="og:title" content="Android中使用OpenGLES的几种方法">
+<meta property="og:url" content="http://huntto.me/2018/10/28/Android中使用OpenGLES的几种方法/index.html">
 <meta property="og:site_name" content="且行且记">
-<meta property="og:description" content="有这么一个需求，需要通过Android升级OpenWrt的固件（Firmware）。参考OpenWrt提供的升级方案，可以使用SSH的scp命令将固件上传到路由器的/tmp目录下，然后执行命令sysupgrade -v /tmp/firmware_name.bin升级固件。">
+<meta property="og:description" content="在Android中使用OpenGLES主要有几种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-22T08:03:04.940Z">
+<meta property="og:updated_time" content="2018-10-28T13:53:11.137Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android升级OpenWrt固件">
-<meta name="twitter:description" content="有这么一个需求，需要通过Android升级OpenWrt的固件（Firmware）。参考OpenWrt提供的升级方案，可以使用SSH的scp命令将固件上传到路由器的/tmp目录下，然后执行命令sysupgrade -v /tmp/firmware_name.bin升级固件。">
+<meta name="twitter:title" content="Android中使用OpenGLES的几种方法">
+<meta name="twitter:description" content="在Android中使用OpenGLES主要有几种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
 
 
 
 
 
 
-  <link rel="canonical" href="http://huntto.me/2018/09/22/Android升级OpenWrt固件/"/>
+  <link rel="canonical" href="http://huntto.me/2018/10/28/Android中使用OpenGLES的几种方法/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>Android升级OpenWrt固件 | 且行且记</title>
+  <title>Android中使用OpenGLES的几种方法 | 且行且记</title>
   
 
 
@@ -289,7 +289,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/09/22/Android升级OpenWrt固件/">
+    <link itemprop="mainEntityOfPage" href="http://huntto.me/2018/10/28/Android中使用OpenGLES的几种方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Huntto">
@@ -306,7 +306,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android升级OpenWrt固件
+          <h1 class="post-title" itemprop="name headline">Android中使用OpenGLES的几种方法
               
             
           </h1>
@@ -331,7 +331,7 @@
                 
               
 
-              <time title="Created: 2018-09-22 15:56:44 / Modified: 16:03:04" itemprop="dateCreated datePublished" datetime="2018-09-22T15:56:44+08:00">2018-09-22</time>
+              <time title="Created: 2018-10-28 21:51:01 / Modified: 21:53:11" itemprop="dateCreated datePublished" datetime="2018-10-28T21:51:01+08:00">2018-10-28</time>
             
 
             
@@ -360,7 +360,7 @@
                   , 
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/OpenWrt/" itemprop="url" rel="index"><span itemprop="name">OpenWrt</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/OpenGL-ES/" itemprop="url" rel="index"><span itemprop="name">OpenGL ES</span></a></span>
 
                 
                 
@@ -394,20 +394,44 @@
       
 
       
-        <p>有这么一个需求，需要通过Android升级<a href="https://openwrt.org/" target="_blank" rel="noopener">OpenWrt</a>的固件（Firmware）。参考OpenWrt提供的<a href="https://openwrt.org/docs/guide-user/installation/generic.sysupgrade" target="_blank" rel="noopener">升级方案</a>，可以使用<a href="https://www.ssh.com/ssh/" target="_blank" rel="noopener">SSH</a>的<code>scp</code>命令将固件上传到路由器的/tmp目录下，然后执行命令<code>sysupgrade -v /tmp/firmware_name.bin</code>升级固件。</p>
+        <p>在Android中使用OpenGLES主要有几种方法：</p>
+<ul>
+<li>使用<code>GLSurfaceView</code>配合<code>GLSurfaceView.Renderer</code>的纯Java代码实现。</li>
+<li>使用<code>GLSurfaceView</code>配合<code>GLSurfaceView.Renderer</code>的半Java半C/C++代码实现。</li>
+<li>使用<code>SurfaceView</code>的的半Java半C/C++代码实现。</li>
+<li>使用<code>ANativeActivity</code>的纯C/C++代码实现。</li>
+</ul>
+<p>下面主要阐述这几种方法的特点。</p>
 <a id="more"></a>
-<h2 id="Android中使用SSH"><a href="#Android中使用SSH" class="headerlink" title="Android中使用SSH"></a>Android中使用SSH</h2><blockquote>
-<p>The SSH protocol uses encryption to secure the connection between a client and a server. All user authentication, commands, output, and file transfers are encrypted to protect against attacks in the network.</p>
-</blockquote>
-<p>站在巨人的肩膀上，不要重复造轮子。<a href="http://www.ganymed.ethz.ch/ssh2/" target="_blank" rel="noopener">Ganymed SSH-2</a>是一个实现了SSH-2协议的Java库，解压<a href="http://www.ganymed.ethz.ch/ssh2/ganymed-ssh2-build210.zip" target="_blank" rel="noopener">ganymed-ssh2-build210.zip</a>，将里面的jar包导入自己的Android项目的<code>libs</code>目录下，并在Module的build.gradle文件中添加如下代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    implementation fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)</span><br><span class="line">    ... ...</span><br><span class="line">    implementation files(&apos;libs/ganymed-ssh2-build210.jar&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个时候就可以在项目中愉快地使用SSH了。</p>
-<h2 id="升级固件"><a href="#升级固件" class="headerlink" title="升级固件"></a>升级固件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">public static boolean upgradeFirmware(String hostname, String username,String password ,String firmwarePath) &#123;</span><br><span class="line">    File firmware = new File(firmwarePath);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        /* Create a connection instance */</span><br><span class="line">        Connection conn = new Connection(hostname);</span><br><span class="line"></span><br><span class="line">        /* Now connect */</span><br><span class="line">        conn.connect();</span><br><span class="line"></span><br><span class="line">        /* Authenticate.</span><br><span class="line">         * If you get an IOException saying something like</span><br><span class="line">         * &quot;Authentication method password not supported by the server at this stage.&quot;</span><br><span class="line">         * then please check the FAQ.</span><br><span class="line">         */</span><br><span class="line">        boolean isAuthenticated = conn.authenticateWithPassword(username, password);</span><br><span class="line"></span><br><span class="line">        if (!isAuthenticated)</span><br><span class="line">            throw new IOException(&quot;Authentication failed.&quot;);</span><br><span class="line"></span><br><span class="line">        /* Create a scp client */</span><br><span class="line">        SCPClient scpClient = conn.createSCPClient();</span><br><span class="line"></span><br><span class="line">        /* Upload firmware file to remote&apos;s /tmp */</span><br><span class="line">        scpClient.put(firmware.getAbsolutePath(), &quot;/tmp&quot;);</span><br><span class="line"></span><br><span class="line">        /* Create a session */</span><br><span class="line">        Session session = conn.openSession();</span><br><span class="line"></span><br><span class="line">        /* Upgrade firmware */</span><br><span class="line">        session.execCommand(&quot;sysupgrade -v /tmp/&quot; + firmware.getName());</span><br><span class="line"></span><br><span class="line">        /*</span><br><span class="line">         * This basic example does not handle stderr, which is sometimes dangerous</span><br><span class="line">         * (please read the FAQ).</span><br><span class="line">         */</span><br><span class="line">        InputStream stdout = new StreamGobbler(session.getStdout());</span><br><span class="line"></span><br><span class="line">        BufferedReader br = new BufferedReader(new InputStreamReader(stdout));</span><br><span class="line"></span><br><span class="line">        while (true) &#123;</span><br><span class="line">            String line = br.readLine();</span><br><span class="line">            if (line == null)</span><br><span class="line">                break;</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /* Show exit status, if available (otherwise &quot;null&quot;) */</span><br><span class="line">        System.out.println(&quot;ExitCode: &quot; + session.getExitStatus());</span><br><span class="line"></span><br><span class="line">        /* Close this session */</span><br><span class="line">        session.close();</span><br><span class="line"></span><br><span class="line">        /* Close the connection */</span><br><span class="line">        conn.close();</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        e.printStackTrace(System.err);</span><br><span class="line">        </span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>代码很简单，这里就不做过多解释了。但是升级固件并不一定会成功，如路由器的空间不足以存放新的固件时。</p>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ol>
-<li><a href="https://chenjy1225.github.io/2018/05/03/android-scp/" target="_blank" rel="noopener">在Android 中实现scp操作</a></li>
-<li><a href="https://openwrt.org/docs/guide-user/installation/generic.sysupgrade" target="_blank" rel="noopener">OpenWrt OS upgrade procedure (LuCI or sysupgrade)</a></li>
+<h2 id="使用GLSurfaceView配合GLSurfaceView-Renderer的纯Java代码实现"><a href="#使用GLSurfaceView配合GLSurfaceView-Renderer的纯Java代码实现" class="headerlink" title="使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现"></a>使用<code>GLSurfaceView</code>配合<code>GLSurfaceView.Renderer</code>的纯Java代码实现</h2><ol>
+<li>对于使用Java/Kotlin的Android开发者来说，可能不愿意写C/C++代码，或者使用C/C++需要学习成本；</li>
+<li>Android之所以使用Java作为上层应用开发语音，也是考虑到Android不止使用一种CPU架构的指令集，如果每个应用都使用C/C++来编写，那么每个应用必然存在armeabi-v7a、arm64-v8a、x86、x86-64、mips…对应的可执行文件，所以使用Java开发可以屏蔽CPU架构的指令集的差异，减小安装包的大小；</li>
+<li>使用<code>GLSurfaceView</code>可以不用写EGL相关部分的代码，因为<code>GLSurfaceView</code>已经帮你处理好了EGL设置（具体在<code>EglHelper</code>中实现），除非默认的设置不满足你的要求才需要自行设置；</li>
+<li><code>GLSurfaceView</code>里面有一个<code>GLThread</code>，<code>GLThread</code>保证所有<code>GLES10</code>、<code>GLES20</code>、<code>GLES30</code>…的方法都只能在这个线程中调用，也就是需要把相关方法写在<code>onSurfaceCreated</code>、<code>onSurfaceChanged</code>和<code>onDrawFrame</code>三个回调方法里，这样可以保证OpenGLES方法调用都在同一个线程中执行。</li>
 </ol>
+<h2 id="使用GLSurfaceView配合GLSurfaceView-Renderer的半Java半C-C-代码实现"><a href="#使用GLSurfaceView配合GLSurfaceView-Renderer的半Java半C-C-代码实现" class="headerlink" title="使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现"></a>使用<code>GLSurfaceView</code>配合<code>GLSurfaceView.Renderer</code>的半Java半C/C++代码实现</h2><p>这种方法除了具备方法一的3、4两个优点外，还具备以下优点：</p>
+<ol>
+<li>对于喜欢使用C/C++的Android开发者来说，可以使用很多开源库来支持OpenGLES的开发，如<a href="https://github.com/g-truc/glm" target="_blank" rel="noopener">glm</a>、<a href="https://github.com/nothings/stb" target="_blank" rel="noopener">stb</a>和<a href="https://github.com/assimp/assimp" target="_blank" rel="noopener">assimp</a>库，这些库都没有对应的官方版Java库；</li>
+<li>如果想通过native的gl方法调用来增加执行速度可能不是很明显，因为上一种方法其实也是通过jni调用相应的native方法，而真正提升速度的可能是3D模型加载以及一些耗时计算上；</li>
+<li>当加载大图片或者大3D模型时使用Java代码实现很容易造成OOM，如果使用native方法来加载，可以减小OOM的可能性；</li>
+</ol>
+<h2 id="使用SurfaceView的的半Java半C-C-代码实现"><a href="#使用SurfaceView的的半Java半C-C-代码实现" class="headerlink" title="使用SurfaceView的的半Java半C/C++代码实现"></a>使用<code>SurfaceView</code>的的半Java半C/C++代码实现</h2><p>这种方法同样具备方法二的1、2、3这三个优点，但是需要自行处理EGL的配置，以及线程安全的问题。</p>
+<h2 id="使用ANativeActivity的纯C-C-代码实现"><a href="#使用ANativeActivity的纯C-C-代码实现" class="headerlink" title="使用ANativeActivity的纯C/C++代码实现"></a>使用<code>ANativeActivity</code>的纯C/C++代码实现</h2><p>对于纯C/C++的开发人员来讲是最想使用的方法，特别是跨平台开发者的最爱，他们只需要根据不同平台抽离EGL配置以及事件获取部分的代码，其它渲染部分的代码都是共用的。那么只要使用了C/C++代码开发的特点有：</p>
+<ol>
+<li>在跨平台开发时，部分C/C++代码在所有平台上都可以运行，不需要使用不同的语言再实现一次，代码复用性高；</li>
+<li>优点与缺点并存，对于按钮的实现不能使用Android的<code>Button</code>这样的Java控件，所以需要自己实现按钮（如Cocos2d-x）。</li>
+</ol>
+<h2 id="示例项目"><a href="#示例项目" class="headerlink" title="示例项目"></a>示例项目</h2><ol>
+<li>对于纯Java的Android开发者，首推<a href="https://pragprog.com/book/kbogla/opengl-es-2-for-android" target="_blank" rel="noopener">《OpenGL ES 2 for Android : A Quick-Start Guide》</a>的<a href="https://pragprog.com/titles/kbogla/source_code" target="_blank" rel="noopener">示例代码</a>。</li>
+<li>对于纯C/C++开发者，可以参考<a href="http://www.opengles-book.com/" target="_blank" rel="noopener">《OpenGL ES 3.0编程指南》</a>的<a href="https://github.com/danginsburg/opengles3-book" target="_blank" rel="noopener">示例代码</a>或者Google官方示例代码<a href="https://github.com/googlesamples/android-ndk/tree/master/native-activity" target="_blank" rel="noopener">native-activity)</a>。</li>
+<li>对于半C/C++半Java开发，可以参考Google官方示例代码<a href="https://github.com/googlesamples/android-ndk/tree/android-mk/gles3jni" target="_blank" rel="noopener">gles3jni</a>。</li>
+</ol>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>现在Vulkan都开始替代OpenGL了，为什么还要花心思去学习OpenGL呢？</p>
+<ul>
+<li>OpenGL的学习资料更多；</li>
+<li>学习OpenGL后，更容易上手Vulkan，因为Vulkan沿用了OpenGL的一些知识点（如MVP，GLSL等）；</li>
+<li>如果要在Android设备上使用Vulkan，目前大部分手机并不支持，而且必须使用C/C++开发，并未提供Java API。</li>
+</ul>
 
       
     </div>
@@ -430,7 +454,7 @@
           
             <a href="/tags/Android/" rel="tag"># Android</a>
           
-            <a href="/tags/OpenWrt固件/" rel="tag"># OpenWrt固件</a>
+            <a href="/tags/OpenGL-ES/" rel="tag"># OpenGL ES</a>
           
         </div>
       
@@ -443,8 +467,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/08/JSON解析之Gson/" rel="next" title="JSON解析之Gson">
-                <i class="fa fa-chevron-left"></i> JSON解析之Gson
+              <a href="/2018/09/22/Android升级OpenWrt固件/" rel="next" title="Android升级OpenWrt固件">
+                <i class="fa fa-chevron-left"></i> Android升级OpenWrt固件
               </a>
             
           </div>
@@ -452,10 +476,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/28/Android中使用OpenGLES的几种方法/" rel="prev" title="Android中使用OpenGLES的几种方法">
-                Android中使用OpenGLES的几种方法 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -651,7 +671,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android中使用SSH"><span class="nav-number">1.</span> <span class="nav-text">Android中使用SSH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级固件"><span class="nav-number">2.</span> <span class="nav-text">升级固件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用GLSurfaceView配合GLSurfaceView-Renderer的纯Java代码实现"><span class="nav-number">1.</span> <span class="nav-text">使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用GLSurfaceView配合GLSurfaceView-Renderer的半Java半C-C-代码实现"><span class="nav-number">2.</span> <span class="nav-text">使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用SurfaceView的的半Java半C-C-代码实现"><span class="nav-number">3.</span> <span class="nav-text">使用SurfaceView的的半Java半C/C++代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用ANativeActivity的纯C-C-代码实现"><span class="nav-number">4.</span> <span class="nav-text">使用ANativeActivity的纯C/C++代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例项目"><span class="nav-number">5.</span> <span class="nav-text">示例项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后记"><span class="nav-number">6.</span> <span class="nav-text">后记</span></a></li></ol></div>
             
 
           </div>
