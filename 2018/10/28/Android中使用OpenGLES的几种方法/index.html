@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="在Android中使用OpenGLES主要有几种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
+  <meta name="description" content="在Android中使用OpenGLES主要有四种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
 <meta name="keywords" content="Android,OpenGL ES">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android中使用OpenGLES的几种方法">
 <meta property="og:url" content="http://huntto.me/2018/10/28/Android中使用OpenGLES的几种方法/index.html">
 <meta property="og:site_name" content="且行且记">
-<meta property="og:description" content="在Android中使用OpenGLES主要有几种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
+<meta property="og:description" content="在Android中使用OpenGLES主要有四种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-10-28T13:53:11.137Z">
+<meta property="og:updated_time" content="2018-10-28T14:09:06.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android中使用OpenGLES的几种方法">
-<meta name="twitter:description" content="在Android中使用OpenGLES主要有几种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
+<meta name="twitter:description" content="在Android中使用OpenGLES主要有四种方法：  使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现。 使用GLSurfaceView配合GLSurfaceView.Renderer的半Java半C/C++代码实现。 使用SurfaceView的的半Java半C/C++代码实现。 使用ANativeActivity的纯C/C++代码实现。">
 
 
 
@@ -331,7 +331,7 @@
                 
               
 
-              <time title="Created: 2018-10-28 21:51:01 / Modified: 21:53:11" itemprop="dateCreated datePublished" datetime="2018-10-28T21:51:01+08:00">2018-10-28</time>
+              <time title="Created: 2018-10-28 21:51:01 / Modified: 22:09:06" itemprop="dateCreated datePublished" datetime="2018-10-28T21:51:01+08:00">2018-10-28</time>
             
 
             
@@ -394,14 +394,14 @@
       
 
       
-        <p>在Android中使用OpenGLES主要有几种方法：</p>
+        <p>在Android中使用OpenGLES主要有四种方法：</p>
 <ul>
 <li>使用<code>GLSurfaceView</code>配合<code>GLSurfaceView.Renderer</code>的纯Java代码实现。</li>
 <li>使用<code>GLSurfaceView</code>配合<code>GLSurfaceView.Renderer</code>的半Java半C/C++代码实现。</li>
 <li>使用<code>SurfaceView</code>的的半Java半C/C++代码实现。</li>
 <li>使用<code>ANativeActivity</code>的纯C/C++代码实现。</li>
 </ul>
-<p>下面主要阐述这几种方法的特点。</p>
+<p>下面主要阐述这四种方法各自的特点。</p>
 <a id="more"></a>
 <h2 id="使用GLSurfaceView配合GLSurfaceView-Renderer的纯Java代码实现"><a href="#使用GLSurfaceView配合GLSurfaceView-Renderer的纯Java代码实现" class="headerlink" title="使用GLSurfaceView配合GLSurfaceView.Renderer的纯Java代码实现"></a>使用<code>GLSurfaceView</code>配合<code>GLSurfaceView.Renderer</code>的纯Java代码实现</h2><ol>
 <li>对于使用Java/Kotlin的Android开发者来说，可能不愿意写C/C++代码，或者使用C/C++需要学习成本；</li>
@@ -413,7 +413,7 @@
 <ol>
 <li>对于喜欢使用C/C++的Android开发者来说，可以使用很多开源库来支持OpenGLES的开发，如<a href="https://github.com/g-truc/glm" target="_blank" rel="noopener">glm</a>、<a href="https://github.com/nothings/stb" target="_blank" rel="noopener">stb</a>和<a href="https://github.com/assimp/assimp" target="_blank" rel="noopener">assimp</a>库，这些库都没有对应的官方版Java库；</li>
 <li>如果想通过native的gl方法调用来增加执行速度可能不是很明显，因为上一种方法其实也是通过jni调用相应的native方法，而真正提升速度的可能是3D模型加载以及一些耗时计算上；</li>
-<li>当加载大图片或者大3D模型时使用Java代码实现很容易造成OOM，如果使用native方法来加载，可以减小OOM的可能性；</li>
+<li>当加载大图片或者大3D模型时使用Java代码实现很容易造成OOM，如果使用native方法来加载，可以减小OOM的可能性。</li>
 </ol>
 <h2 id="使用SurfaceView的的半Java半C-C-代码实现"><a href="#使用SurfaceView的的半Java半C-C-代码实现" class="headerlink" title="使用SurfaceView的的半Java半C/C++代码实现"></a>使用<code>SurfaceView</code>的的半Java半C/C++代码实现</h2><p>这种方法同样具备方法二的1、2、3这三个优点，但是需要自行处理EGL的配置，以及线程安全的问题。</p>
 <h2 id="使用ANativeActivity的纯C-C-代码实现"><a href="#使用ANativeActivity的纯C-C-代码实现" class="headerlink" title="使用ANativeActivity的纯C/C++代码实现"></a>使用<code>ANativeActivity</code>的纯C/C++代码实现</h2><p>对于纯C/C++的开发人员来讲是最想使用的方法，特别是跨平台开发者的最爱，他们只需要根据不同平台抽离EGL配置以及事件获取部分的代码，其它渲染部分的代码都是共用的。那么只要使用了C/C++代码开发的特点有：</p>
@@ -422,8 +422,8 @@
 <li>优点与缺点并存，对于按钮的实现不能使用Android的<code>Button</code>这样的Java控件，所以需要自己实现按钮（如Cocos2d-x）。</li>
 </ol>
 <h2 id="示例项目"><a href="#示例项目" class="headerlink" title="示例项目"></a>示例项目</h2><ol>
-<li>对于纯Java的Android开发者，首推<a href="https://pragprog.com/book/kbogla/opengl-es-2-for-android" target="_blank" rel="noopener">《OpenGL ES 2 for Android : A Quick-Start Guide》</a>的<a href="https://pragprog.com/titles/kbogla/source_code" target="_blank" rel="noopener">示例代码</a>。</li>
-<li>对于纯C/C++开发者，可以参考<a href="http://www.opengles-book.com/" target="_blank" rel="noopener">《OpenGL ES 3.0编程指南》</a>的<a href="https://github.com/danginsburg/opengles3-book" target="_blank" rel="noopener">示例代码</a>或者Google官方示例代码<a href="https://github.com/googlesamples/android-ndk/tree/master/native-activity" target="_blank" rel="noopener">native-activity)</a>。</li>
+<li>对于纯Java的Android开发者，首推<a href="https://pragprog.com/book/kbogla/opengl-es-2-for-android" target="_blank" rel="noopener">《OpenGL ES 2 for Android : A Quick-Start Guide》</a>的<a href="https://pragprog.com/titles/kbogla/source_code" target="_blank" rel="noopener">示例代码</a>；</li>
+<li>对于纯C/C++开发者，可以参考<a href="http://www.opengles-book.com/" target="_blank" rel="noopener">《OpenGL ES 3.0编程指南》</a>的<a href="https://github.com/danginsburg/opengles3-book" target="_blank" rel="noopener">示例代码</a>或者Google官方示例代码<a href="https://github.com/googlesamples/android-ndk/tree/master/native-activity" target="_blank" rel="noopener">native-activity)</a>；</li>
 <li>对于半C/C++半Java开发，可以参考Google官方示例代码<a href="https://github.com/googlesamples/android-ndk/tree/android-mk/gles3jni" target="_blank" rel="noopener">gles3jni</a>。</li>
 </ol>
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>现在Vulkan都开始替代OpenGL了，为什么还要花心思去学习OpenGL呢？</p>
