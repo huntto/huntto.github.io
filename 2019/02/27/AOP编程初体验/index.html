@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="过去总是听到面向切面编程（Aspect Oriented Programming）话题，一直没有找到合适的机会去了解它。最近在不同项目之间切换，每次都要写一些重复的代码，想减轻一下工作量。正好每个项目都需要打log，那么就从最简单的打log开始吧。">
+<meta name="keywords" content="Android,AOP,Log,AspectJ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AOP编程初体验">
+<meta property="og:url" content="http://www.ihuntto.com/2019/02/27/AOP编程初体验/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="过去总是听到面向切面编程（Aspect Oriented Programming）话题，一直没有找到合适的机会去了解它。最近在不同项目之间切换，每次都要写一些重复的代码，想减轻一下工作量。正好每个项目都需要打log，那么就从最简单的打log开始吧。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.ihuntto.com/2019/02/27/AOP编程初体验/AOP_APK.png">
+<meta property="og:updated_time" content="2019-02-27T14:22:26.940Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AOP编程初体验">
+<meta name="twitter:description" content="过去总是听到面向切面编程（Aspect Oriented Programming）话题，一直没有找到合适的机会去了解它。最近在不同项目之间切换，每次都要写一些重复的代码，想减轻一下工作量。正好每个项目都需要打log，那么就从最简单的打log开始吧。">
+<meta name="twitter:image" content="http://www.ihuntto.com/2019/02/27/AOP编程初体验/AOP_APK.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.ihuntto.com/2019/02/27/AOP编程初体验/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>AOP编程初体验 | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.ihuntto.com/2019/02/27/AOP编程初体验/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">AOP编程初体验
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-02-27 22:12:32 / Modified: 22:22:26" itemprop="dateCreated datePublished" datetime="2019-02-27T22:12:32+08:00">2019-02-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>过去总是听到面向切面编程（Aspect Oriented Programming）话题，一直没有找到合适的机会去了解它。最近在不同项目之间切换，每次都要写一些重复的代码，想减轻一下工作量。正好每个项目都需要打log，那么就从最简单的打log开始吧。</p>
+<a id="more"></a>
+<hr>
+<h2 id="实现打log"><a href="#实现打log" class="headerlink" title="实现打log"></a>实现打log</h2><p>对于Android应用开发者，应该都会通过log输出查看自己程序的运行情况。因此在代码适当位置添加log输出代码是必不可少的。接下来探讨一下怎样简化log输出方法的调用。</p>
+<h3 id="初级版"><a href="#初级版" class="headerlink" title="初级版"></a>初级版</h3><p>最开始，我们一般这样打log来观察<code>Activity</code>的状态变换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line">    private static final String TAG = MainActivity.class.getSimpleName();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        Log.d(TAG, &quot;onCreate&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onStart() &#123;</span><br><span class="line">        super.onStart();</span><br><span class="line">        Log.d(TAG, &quot;onStart&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onResume() &#123;</span><br><span class="line">        super.onResume();</span><br><span class="line">        Log.d(TAG, &quot;onResume&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onPause() &#123;</span><br><span class="line">        super.onPause();</span><br><span class="line">        Log.d(TAG, &quot;onPause&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onStop() &#123;</span><br><span class="line">        super.onStop();</span><br><span class="line">        Log.d(TAG, &quot;onStop&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onDestroy() &#123;</span><br><span class="line">        super.onDestroy();</span><br><span class="line">        Log.d(TAG, &quot;onDestroy&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>启动和关闭应用时可以看到类似如下的log输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2019-02-23 15:08:24.671 26599-26599/com.ihuntto.aop_simplelogger D/MainActivity: onCreate</span><br><span class="line">2019-02-23 15:08:24.673 26599-26599/com.ihuntto.aop_simplelogger D/MainActivity: onStart</span><br><span class="line">2019-02-23 15:08:24.678 26599-26599/com.ihuntto.aop_simplelogger D/MainActivity: onResume</span><br><span class="line">2019-02-23 15:09:15.982 26599-26599/com.ihuntto.aop_simplelogger D/MainActivity: onPause</span><br><span class="line">2019-02-23 15:09:16.558 26599-26599/com.ihuntto.aop_simplelogger D/MainActivity: onStop</span><br><span class="line">2019-02-23 15:09:16.559 26599-26599/com.ihuntto.aop_simplelogger D/MainActivity: onDestroy</span><br></pre></td></tr></table></figure></p>
+<p>慢慢地开始发现<code>tag</code>就是类名，而<code>msg</code>就是方法名，当类和方法变多的时候，<code>tag</code>和<code>msg</code>的传入就变得很无聊了，而且<code>tag</code>和<code>msg</code>有很大的概率会输错。那有没有什么方法可以省去<code>tag</code>和<code>msg</code>的输入呢（能少写点代码就尽量少写点代码）？那就要进入进阶版了。</p>
+<h3 id="进阶版"><a href="#进阶版" class="headerlink" title="进阶版"></a>进阶版</h3><p>既然<code>tag</code>和<code>msg</code>分别是固定的类名和方法名，可以通过<code>StackTrace</code>找到<code>Log.d(*)</code>调用者对应的类名和方法名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public final class SimpleLog &#123;</span><br><span class="line">    private static final boolean D = BuildConfig.DEBUG;</span><br><span class="line">    private static final int STACK_INDEX = 4;</span><br><span class="line"></span><br><span class="line">    public static void d() &#123;</span><br><span class="line">        if (D) &#123;</span><br><span class="line">            Log.d(getClassName(), getMethodName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static String getMethodName() &#123;</span><br><span class="line">        return Thread.currentThread().getStackTrace()[STACK_INDEX].getMethodName();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static String getClassName() &#123;</span><br><span class="line">        return Thread.currentThread().getStackTrace()[STACK_INDEX].getClassName();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private SimpleLog() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>把前面<code>MainActivity</code>中的<code>Log</code>换成<code>SimpleLog</code>后，<strong>可能会</strong>看到类似如下log输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2019-02-23 15:15:53.632 27446-27446/com.ihuntto.aop_simplelogger D/com.ihuntto.aop_simplelogger.MainActivity: onCreate</span><br><span class="line">2019-02-23 15:15:53.634 27446-27446/com.ihuntto.aop_simplelogger D/com.ihuntto.aop_simplelogger.MainActivity: onStart</span><br><span class="line">2019-02-23 15:15:53.639 27446-27446/com.ihuntto.aop_simplelogger D/com.ihuntto.aop_simplelogger.MainActivity: onResume</span><br><span class="line">2019-02-23 15:15:56.306 27446-27446/com.ihuntto.aop_simplelogger D/com.ihuntto.aop_simplelogger.MainActivity: onPause</span><br><span class="line">2019-02-23 15:15:56.466 27446-27446/com.ihuntto.aop_simplelogger D/com.ihuntto.aop_simplelogger.MainActivity: onStop</span><br><span class="line">2019-02-23 15:15:56.467 27446-27446/com.ihuntto.aop_simplelogger D/com.ihuntto.aop_simplelogger.MainActivity: onDestroy</span><br></pre></td></tr></table></figure></p>
+<p>为什么说是<strong>可能</strong>呢？如果有注意到<code>STACK_INDEX</code>这个变量的值为<strong>4</strong>，<strong>4</strong>是怎么得出来的呢？在我的Android运行环境中这个值是<strong>4</strong>，换了其它的Android环境就可能是<strong>5</strong>或者<strong>6</strong>了。因此，这种方法看似可行，但不够通用。</p>
+<h3 id="高阶版"><a href="#高阶版" class="headerlink" title="高阶版"></a>高阶版</h3><blockquote>
+<p>Aspect-oriented programming (AOP) is a programming paradigm that aims to increase modularity by allowing the separation of cross-cutting concerns. It does so by adding additional behavior to existing code (an advice) without modifying the code itself, instead separately specifying which code is modified via a “pointcut” specification, such as “log all function calls when the function’s name begins with ‘set’”. This allows behaviors that are not central to the business logic (such as logging) to be added to a program without cluttering the code, core to the functionality. AOP forms a basis for aspect-oriented software development. –<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming" target="_blank" rel="noopener">Wikipedia</a></p>
+</blockquote>
+<p>了解了什么是AOP编程，那么怎么实现呢？其实百度谷歌一下就知道怎么在Android中实现AOP编程了。本文中主要介绍使用<a href="https://www.eclipse.org/aspectj/" target="_blank" rel="noopener">AspectJ</a>来实现打log的高阶版。先抛开AspectJ的接口介绍，首要目的是使用最少的代码使它运行起来。</p>
+<h4 id="定义注解类"><a href="#定义注解类" class="headerlink" title="定义注解类"></a>定义注解类</h4><p>定义注解类，主要用于帮助面向切面编程找到合适的切入点，并注入log代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Retention(RetentionPolicy.CLASS)</span><br><span class="line">@Target(ElementType.METHOD)</span><br><span class="line">public @interface Logcat &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>@Retention(RetentionPolicy.CLASS)</code>表示注解会被保留在class文件中，但在运行时期间不会被识别，<code>@Target(ElementType.METHOD)</code>表示这个注解只能在方法上使用。</p>
+<h4 id="导入AspectJ"><a href="#导入AspectJ" class="headerlink" title="导入AspectJ"></a>导入AspectJ</h4><ol>
+<li>在<strong>Project</strong>的<strong>build.gradle</strong>文件中添加依赖：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    </span><br><span class="line">    repositories &#123;</span><br><span class="line">        google()</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath &apos;com.android.tools.build:gradle:3.2.1&apos;</span><br><span class="line"></span><br><span class="line">        classpath &apos;com.hujiang.aspectjx:gradle-android-plugin-aspectjx:1.1.1&apos;</span><br><span class="line">        // NOTE: Do not place your application dependencies here; they belong</span><br><span class="line">        // in the individual module build.gradle files</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>其中<code>gradle-android-plugin-aspectjx</code>是一个<a href="https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx" target="_blank" rel="noopener">开源插件</a>，通过这个插件可以很轻松的开始AspectJ编程。</p>
+<ol start="2">
+<li>在<strong>Module</strong>的<strong>build.gradle</strong>文件中添加依赖：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;com.android.application&apos;</span><br><span class="line">apply plugin: &apos;com.hujiang.android-aspectjx&apos;</span><br><span class="line"></span><br><span class="line">android &#123;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    implementation &apos;org.aspectj:aspectjrt:1.8.13&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="编写切面类"><a href="#编写切面类" class="headerlink" title="编写切面类"></a>编写切面类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@Aspect</span><br><span class="line">public class LogcatAspect &#123;</span><br><span class="line">    // 带有@Logcat注解的方法</span><br><span class="line">    private static final String POINTCUT_METHOD =</span><br><span class="line">            &quot;execution(@com.ihuntto.aop_simplelogger.Logcat * *(..))&quot;;</span><br><span class="line"></span><br><span class="line">    @Pointcut(POINTCUT_METHOD)</span><br><span class="line">    public void pointcut() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Around(&quot;pointcut()&quot;)</span><br><span class="line">    public void around(ProceedingJoinPoint joinPoint) throws Throwable &#123;</span><br><span class="line">        // 获取待注入点的类名和方法名</span><br><span class="line">        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();</span><br><span class="line">        String className = methodSignature.getDeclaringType().getSimpleName();</span><br><span class="line">        String methodName = methodSignature.getName();</span><br><span class="line"></span><br><span class="line">        // log输出</span><br><span class="line">        Log.d(className, methodName);</span><br><span class="line"></span><br><span class="line">        // 执行原有的方法，非常重要，在本例中必须要有</span><br><span class="line">        joinPoint.proceed();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>意思是当代码执行到带有<code>@Logcat</code>注解的方法时注入log输出的方法。</p>
+<h4 id="使用注解"><a href="#使用注解" class="headerlink" title="使用注解"></a>使用注解</h4><p>现在可以在<code>MainActivity</code>中的方法上添加<code>@Logcat</code>注解了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @Logcat</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @Logcat</span><br><span class="line">    protected void onRestart() &#123;</span><br><span class="line">        super.onRestart();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @Logcat</span><br><span class="line">    protected void onStart() &#123;</span><br><span class="line">        super.onStart();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @Logcat</span><br><span class="line">    protected void onResume() &#123;</span><br><span class="line">        super.onResume();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @Logcat</span><br><span class="line">    protected void onPause() &#123;</span><br><span class="line">        super.onPause();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @Logcat</span><br><span class="line">    protected void onStop() &#123;</span><br><span class="line">        super.onStop();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @Logcat</span><br><span class="line">    protected void onDestroy() &#123;</span><br><span class="line">        super.onDestroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果不出意外的话，可以看到类似的输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2019-02-23 16:30:24.528 2991-2991/com.ihuntto.aop_simplelogger D/MainActivity: onCreate</span><br><span class="line">2019-02-23 16:30:24.570 2991-2991/com.ihuntto.aop_simplelogger D/MainActivity: onStart</span><br><span class="line">2019-02-23 16:30:24.574 2991-2991/com.ihuntto.aop_simplelogger D/MainActivity: onResume</span><br><span class="line">2019-02-23 16:30:27.494 2991-2991/com.ihuntto.aop_simplelogger D/MainActivity: onPause</span><br><span class="line">2019-02-23 16:30:27.717 2991-2991/com.ihuntto.aop_simplelogger D/MainActivity: onStop</span><br><span class="line">2019-02-23 16:30:27.718 2991-2991/com.ihuntto.aop_simplelogger D/MainActivity: onDestroy</span><br></pre></td></tr></table></figure></p>
+<p>和初级版的log输出是一模一样的。初步看起来已经满足了当初的需求，以最少的代码实现打log。但是<code>AspectJ</code>会不会有副作用呢？</p>
+<h2 id="分析优化"><a href="#分析优化" class="headerlink" title="分析优化"></a>分析优化</h2><p>如果使用的是AndroidStudio作为开发工具，那么可以很方便的分析APK文件。而本例就要分析使用AspectJ会不会增加APK文件的大小，以及是否会产生更多的方法，以及如何避免这些缺点。</p>
+<h3 id="生成APK文件"><a href="#生成APK文件" class="headerlink" title="生成APK文件"></a>生成APK文件</h3><p>首先需要生成APK文件。如果在app/build/outputs/apk/debug目录下没有对应的APK文件，那么可以通过点击菜单 <strong>Build &gt;&gt; Build Bundle(s)/APK(s) &gt;&gt; Build APK(s)</strong>生成APK文件。</p>
+<h3 id="解析APK文件"><a href="#解析APK文件" class="headerlink" title="解析APK文件"></a>解析APK文件</h3><p>双击打开app/build/outputs/apk/debug/app-debug.apk文件（不需要通过复杂的反编译手段），如图所示。</p>
+<p><div class="image-size-200"><br><img src="/2019/02/27/AOP编程初体验/AOP_APK.png" title="APK文件分析"><br></div><br>首先可以看到<code>org.aspectj</code>包大小为73.1K；其次可以看到<code>MainActivity</code>类中有下面这些方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void onCreate_aroundBody0(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onCreate_aroundBody1(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onRestart_aroundBody2(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onRestart_aroundBody3(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onStart_aroundBody4(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onStart_aroundBody5(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onResume_aroundBody6(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onResmue_aroundBody7(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onPause_aroundBody8(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onPause_aroundBody9(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onStop_aroundBody10(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onStop_aroundBody11(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onDestroy_aroundBody12(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br><span class="line">void onDestroy_aroundBody13(Lcom/ihuntto/aop_simplelogger/MainActivity;Landroid/os/Bundle;Lorg/aspectj/lang/JoinPoint;)V</span><br></pre></td></tr></table></figure></p>
+<p>因此可以得出结论：</p>
+<ul>
+<li>使用AspectJ会使APK大小增加73.1K</li>
+<li>每使用一个<code>@Logcat</code>注解，就会多产生两个方法<h3 id="尝试优化"><a href="#尝试优化" class="headerlink" title="尝试优化"></a>尝试优化</h3>由于这种非常简单的log对开发阶段是非常有用的，可以让开发人员了解程序的运行情况，但是在应用发布以后，这些信息变得不那么重要了。那么可不可以在发布版本中去掉AspectJ包和新增的方法呢？下面给出了两种尝试方法。</li>
+</ul>
+<ol>
+<li>在release版本的编译过程中不执行AspectJ相关的操作。将<strong>Module</strong>的<strong>build.gradle</strong>修改如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;com.android.application&apos;</span><br><span class="line"></span><br><span class="line">boolean isDebug = false</span><br><span class="line"></span><br><span class="line">android &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled false</span><br><span class="line">            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</span><br><span class="line">        &#125;</span><br><span class="line">        debug &#123;</span><br><span class="line">            isDebug = true</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    implementation &apos;org.aspectj:aspectjrt:1.8.13&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if(isDebug) &#123;</span><br><span class="line">    apply plugin: &apos;com.hujiang.android-aspectjx&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>因为在<code>release</code>中没有执行AspectJ相关的编译，所以这一步可以减少<code>MainActivity</code>中由于使用<code>@Logcat</code>新增的方法，但仍然会保留<code>org.aspectj</code>包。</p>
+<ol start="2">
+<li>在release版本中不依赖<code>SimpleLogAspect</code>类。将<code>SimpleLogAspect</code>移至新的Module中，就取名<code>simplelogger-aspect</code>，同时将<code>Logcat</code>移至新的模块<code>simplelogger-annotations</code>中；然后修改<strong>app</strong>的<strong>build.gradle</strong>文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;com.android.application&apos;</span><br><span class="line">apply plugin: &apos;com.hujiang.android-aspectjx&apos;</span><br><span class="line"></span><br><span class="line">... ...</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    implementation project(&apos;:simplelogger-annotations&apos;)</span><br><span class="line">    debugImplementation project(&apos;:simplelogger-aspect&apos;)</span><br><span class="line">&#125;</span><br><span class="line">... ...</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>其中<code>simplelogger-annotations</code>只包含注解类，而<code>simplelogger-aspect</code>只包含切面类。通过此方法可以在<code>release</code>版本中去除APK文件中<code>org.aspectj</code>包，还可以避免由于使用<code>@Logcat</code>注解新增方法。</p>
+<h2 id="生产工具"><a href="#生产工具" class="headerlink" title="生产工具"></a>生产工具</h2><p>将上一步中提到的<code>simplelogger-annotations</code>和<code>simplelogger-aspect</code>这两个模块打包上传到meavn仓库。这样每次编写应用时，只需要导入相应的依赖即可，不需要编写注解类和切面类了，也算是一劳永逸了。开源项目<a href="https://github.com/huntto/SimpleLogger" target="_blank" rel="noopener">SimpleLogger</a>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文只是简单介绍了如何使用AspectJ进行面向切面编程，并没有详细介绍<code>AspectJ</code>的使用方法，如果想要详细了解<code>AspectJ</code>，可移步<a href="https://www.eclipse.org/aspectj/doc/released/progguide/index.html" target="_blank" rel="noopener">官方文档</a>。在平时编写代码时，要更多的注重复用，而不是复制，养成良好的编程习惯，既省时又高效。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>[1] <a href="https://www.jianshu.com/p/c4c86e75cf83" target="_blank" rel="noopener">利用AspectJ实现Android端非侵入式埋点</a><br>[2] <a href="https://www.jianshu.com/p/aa1112dbebc7" target="_blank" rel="noopener">Android面向切面编程（AOP）</a><br>[3] <a href="https://www.jianshu.com/p/dca3e2c8608a" target="_blank" rel="noopener">安卓AOP三剑客:APT,AspectJ,Javassist</a><br>[4] <a href="https://www.jianshu.com/p/f577aec99e17" target="_blank" rel="noopener">关于android中使用AspectJ</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/AOP/" rel="tag"># AOP</a>
+          
+            <a href="/tags/Log/" rel="tag"># Log</a>
+          
+            <a href="/tags/AspectJ/" rel="tag"># AspectJ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/20/Retrofit简单使用/" rel="next" title="Retrofit简单使用">
+                <i class="fa fa-chevron-left"></i> Retrofit简单使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现打log"><span class="nav-number">1.</span> <span class="nav-text">实现打log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初级版"><span class="nav-number">1.1.</span> <span class="nav-text">初级版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进阶版"><span class="nav-number">1.2.</span> <span class="nav-text">进阶版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高阶版"><span class="nav-number">1.3.</span> <span class="nav-text">高阶版</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义注解类"><span class="nav-number">1.3.1.</span> <span class="nav-text">定义注解类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导入AspectJ"><span class="nav-number">1.3.2.</span> <span class="nav-text">导入AspectJ</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编写切面类"><span class="nav-number">1.3.3.</span> <span class="nav-text">编写切面类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用注解"><span class="nav-number">1.3.4.</span> <span class="nav-text">使用注解</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析优化"><span class="nav-number">2.</span> <span class="nav-text">分析优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成APK文件"><span class="nav-number">2.1.</span> <span class="nav-text">生成APK文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析APK文件"><span class="nav-number">2.2.</span> <span class="nav-text">解析APK文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尝试优化"><span class="nav-number">2.3.</span> <span class="nav-text">尝试优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产工具"><span class="nav-number">3.</span> <span class="nav-text">生产工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">5.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
