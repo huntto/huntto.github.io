@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="对于Android进程保活问题，网上已经有很多答案了。比如：  【腾讯Bugly干货分享】Android 进程保活招式大全 Android保活/拉活（一）教程检索  方案有很多种，但每一种方案的有其适用范围，且随着Android版本的更新和厂商对ROM的深度定制，所以昨天的方法，今天不一定适用。有没有完全之策呢？可以肯定的说没有。虽然没有百分之百可靠的方法，但这不该成为你去探索答案的阻碍。">
+<meta name="keywords" content="Android,进程保活,悬浮窗">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android进程保活之一像素悬浮窗">
+<meta property="og:url" content="http://www.ihuntto.com/2019/03/24/Android进程保活之一像素悬浮窗/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="对于Android进程保活问题，网上已经有很多答案了。比如：  【腾讯Bugly干货分享】Android 进程保活招式大全 Android保活/拉活（一）教程检索  方案有很多种，但每一种方案的有其适用范围，且随着Android版本的更新和厂商对ROM的深度定制，所以昨天的方法，今天不一定适用。有没有完全之策呢？可以肯定的说没有。虽然没有百分之百可靠的方法，但这不该成为你去探索答案的阻碍。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.ihuntto.com/2019/03/24/Android进程保活之一像素悬浮窗/screenshot.png">
+<meta property="og:updated_time" content="2019-03-24T11:00:43.434Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android进程保活之一像素悬浮窗">
+<meta name="twitter:description" content="对于Android进程保活问题，网上已经有很多答案了。比如：  【腾讯Bugly干货分享】Android 进程保活招式大全 Android保活/拉活（一）教程检索  方案有很多种，但每一种方案的有其适用范围，且随着Android版本的更新和厂商对ROM的深度定制，所以昨天的方法，今天不一定适用。有没有完全之策呢？可以肯定的说没有。虽然没有百分之百可靠的方法，但这不该成为你去探索答案的阻碍。">
+<meta name="twitter:image" content="http://www.ihuntto.com/2019/03/24/Android进程保活之一像素悬浮窗/screenshot.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.ihuntto.com/2019/03/24/Android进程保活之一像素悬浮窗/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android进程保活之一像素悬浮窗 | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.ihuntto.com/2019/03/24/Android进程保活之一像素悬浮窗/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android进程保活之一像素悬浮窗
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-24 18:18:17 / Modified: 19:00:43" itemprop="dateCreated datePublished" datetime="2019-03-24T18:18:17+08:00">2019-03-24</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/性能优化/" itemprop="url" rel="index"><span itemprop="name">性能优化</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对于Android进程保活问题，网上已经有很多答案了。比如：</p>
+<ul>
+<li><a href="https://segmentfault.com/a/1190000006251859" target="_blank" rel="noopener">【腾讯Bugly干货分享】Android 进程保活招式大全</a></li>
+<li><a href="https://www.jianshu.com/p/b51e2dbf2311" target="_blank" rel="noopener">Android保活/拉活（一）教程检索</a></li>
+</ul>
+<p>方案有很多种，但每一种方案的有其适用范围，且随着Android版本的更新和厂商对ROM的深度定制，所以昨天的方法，今天不一定适用。有没有完全之策呢？可以肯定的说没有。虽然没有百分之百可靠的方法，但这不该成为你去探索答案的阻碍。</p>
+<a id="more"></a>
+<hr>
+<h2 id="What"><a href="#What" class="headerlink" title="What"></a>What</h2><p>进程保活，顾名思义，就是：</p>
+<ul>
+<li>尽量让进程不被系统或用户杀死；</li>
+<li>即使进程死掉了，也能在某个时候正确的复活。</li>
+</ul>
+<h2 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h2><p>为什么要进程保活呢？因为：</p>
+<ul>
+<li>需要常驻后台，处理消息，如即时通讯应用；</li>
+<li>实时收集用户的信息或者监控用户的操作，流氓软件；</li>
+<li>非正常死亡，正在处理的任务被中断，希望起来继续任务，如语音视频通话进程；</li>
+<li>还有很多理由。</li>
+</ul>
+<h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2><p>在进行进程保活之前，首先要明确自己的应用是否一定要一直运行？比如某些应用为了进入首页的时间更短，让自己的应用常驻，这样后面每次进入首页时用户感知的延迟会更短。因为<code>Application</code>除了在第一次进入时才需要创建外，后面都不需要创建。这种情况下，应该更加注重应用的启动优化，而不是走旁门左道。</p>
+<p>在明确需要进程保活后，在Android上可以从几方面入手：</p>
+<ul>
+<li>避免被系统杀死</li>
+<li>避免被用户杀死</li>
+<li>避免被其他应用杀死</li>
+<li>死后自启</li>
+<li>死后被系统唤起</li>
+<li>死后被其他应用唤起</li>
+</ul>
+<p>下面举一个简单的例子，通过<strong>一像素的悬浮窗</strong>来提高进程的优先级，可以尽量避免在低内存情况下被系统优先杀掉，同时也可以避免用户通过最近应用列表杀死进程，且在某些情况下还可以自启。</p>
+<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>一像素悬浮窗，就是通过启动<code>OnePixelWindowService</code>，然后使用<code>WindowManager</code>的<code>addView</code>方法添加一个大小为<code>1x1</code>的透明<code>View</code>；并在<code>Service</code>的<code>onStartCommand</code>方法中返回<code>START_STICKY</code>。接下来看看具体的代码。</p>
+<h3 id="权限申请"><a href="#权限申请" class="headerlink" title="权限申请"></a>权限申请</h3><p>添加悬浮窗需要在<code>AndroidManifest.xml</code>文件中申明相关的权限：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.SYSTEM_ALERT_WINDOW&quot; /&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.SYSTEM_OVERLAY_WINDOW&quot; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>由于Android在6.0后需要动态申请权限，所以还要在添加悬浮窗前确保权限已经获得。下面是假设在<code>Activity</code>中启动<code>OnePixelWindowService</code>的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line">    private static final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 0x201;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M) &#123;</span><br><span class="line">            if (Settings.canDrawOverlays(MainActivity.this)) &#123;</span><br><span class="line">                startOnePixelWindowService();</span><br><span class="line">                finish();</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,</span><br><span class="line">                        Uri.parse(&quot;package:&quot; + getPackageName()));</span><br><span class="line">                startActivityForResult(intent, REQUEST_CODE_FOR_OVERLAY_PERMISSION);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            startOnePixelWindowService();</span><br><span class="line">            finish();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void startOnePixelWindowService() &#123;</span><br><span class="line">        Intent intent = new Intent(MainActivity.this, OnePixelWindowService.class);</span><br><span class="line">        startService(intent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) &#123;</span><br><span class="line">        super.onActivityResult(requestCode, resultCode, data);</span><br><span class="line">        if (requestCode == REQUEST_CODE_FOR_OVERLAY_PERMISSION</span><br><span class="line">                &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</span><br><span class="line">                &amp;&amp; Settings.canDrawOverlays(MainActivity.this)) &#123;</span><br><span class="line">            startOnePixelWindowService();</span><br><span class="line">        &#125;</span><br><span class="line">        finish();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="添加悬浮窗"><a href="#添加悬浮窗" class="headerlink" title="添加悬浮窗"></a>添加悬浮窗</h3><p>在<code>Service</code>中添加悬浮窗需要在<code>onCreate</code>方法中进行，因为在多次调用<code>startService</code>的情况下，<code>onCreate</code>只会调用一次。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">private WindowManager mWindowManager;</span><br><span class="line">private View mOnePixelView;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void onCreate() &#123;</span><br><span class="line">    super.onCreate();</span><br><span class="line">    addOnePixelView();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void addOnePixelView() &#123;</span><br><span class="line">    mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);</span><br><span class="line"></span><br><span class="line">    WindowManager.LayoutParams params = new WindowManager.LayoutParams();</span><br><span class="line">    if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) &#123;</span><br><span class="line">        params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;</span><br><span class="line">    &#125;</span><br><span class="line">    params.format = PixelFormat.RGBA_8888;</span><br><span class="line">    params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE</span><br><span class="line">            | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL</span><br><span class="line">            | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;</span><br><span class="line">    params.gravity = Gravity.START | Gravity.TOP;</span><br><span class="line">    params.x = 0;</span><br><span class="line">    params.y = 0;</span><br><span class="line">    params.width = WINDOW_SIZE;</span><br><span class="line">    params.height = WINDOW_SIZE;</span><br><span class="line"></span><br><span class="line">    mOnePixelView = new View(this);</span><br><span class="line">    mOnePixelView.setBackgroundColor(WINDOW_COLOR);</span><br><span class="line">    mWindowManager.addView(mOnePixelView, params);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果是添加<code>1x1</code>的透明窗口，很难确定是否添加成功，因此在Debug阶段，窗口大小改为<code>10x10</code>，且背景色为红色：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">private static final int WINDOW_SIZE = BuildConfig.DEBUG ? 10 : 1;</span><br><span class="line">private static final int WINDOW_COLOR = BuildConfig.DEBUG ? Color.RED : Color.TRANSPARENT;</span><br></pre></td></tr></table></figure></p>
+<p>同时还要确保在<code>onDestroy</code>方法中移除添加的<code>View</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onDestroy() &#123;</span><br><span class="line">    super.onDestroy();</span><br><span class="line">    removeOnPixelView();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void removeOnPixelView() &#123;</span><br><span class="line">    if (mOnePixelView != null &amp;&amp; mWindowManager != null) &#123;</span><br><span class="line">        mWindowManager.removeViewImmediate(mOnePixelView);</span><br><span class="line">        mOnePixelView = null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后还要在<code>onStartCommand</code>方法中返回<code>START_STICKY</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public int onStartCommand(Intent intent, int flags, int startId) &#123;</span><br><span class="line">    return START_STICKY;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>至此可以运行应用了，验证结果怎么样。</p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p>在我的LG Nexus 5X(8.1.0)上运行应用，可以顺利看到屏幕左上角有一个红色小方块，清除最近任务后红色小方块也不会消失。<br><img src="screenshot.png" alt="screenshot"><br>接下来查看当前应用的<code>oom_adj</code>的值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~ adb shell ps | grep android_keepalive</span><br><span class="line">u0_a106      26707  3176 4320772  60756 SyS_epoll_wait 7478cc43f8 S com.ihuntto.android_keepalive</span><br><span class="line">~ adb shell cat /proc/26707/oom_adj    </span><br><span class="line">4</span><br></pre></td></tr></table></figure></p>
+<p>可以看到<code>oom_adj</code>值为4，4代表的是后台重量级进程，比起可见进程的<code>oom_adj</code>的0还是低了一点，难怪使用的都是添加1像素的Activity。同时发现当手机息屏后，过一段时间，进程还是会被系统给杀掉。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然有众多的Android进程保活方法，我还要自己去尝试1个像素的透明悬浮窗，主要是为了验证自己的想法的可行性，同时也是自己在Android进程保活路上的第一个脚印。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p>[1] <a href="https://segmentfault.com/a/1190000006251859" target="_blank" rel="noopener">【腾讯Bugly干货分享】Android 进程保活招式大全</a><br>[2] <a href="https://www.jianshu.com/p/b51e2dbf2311" target="_blank" rel="noopener">Android保活/拉活（一）教程检索</a><br>[3] <a href="https://blog.csdn.net/zephyr_g/article/details/80121799" target="_blank" rel="noopener">Android进程保活</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/进程保活/" rel="tag"># 进程保活</a>
+          
+            <a href="/tags/悬浮窗/" rel="tag"># 悬浮窗</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/27/AOP编程初体验/" rel="next" title="AOP编程初体验">
+                <i class="fa fa-chevron-left"></i> AOP编程初体验
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What"><span class="nav-number">1.</span> <span class="nav-text">What</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why"><span class="nav-number">2.</span> <span class="nav-text">Why</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How"><span class="nav-number">3.</span> <span class="nav-text">How</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#举个例子"><span class="nav-number">4.</span> <span class="nav-text">举个例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#权限申请"><span class="nav-number">4.1.</span> <span class="nav-text">权限申请</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加悬浮窗"><span class="nav-number">4.2.</span> <span class="nav-text">添加悬浮窗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行"><span class="nav-number">4.3.</span> <span class="nav-text">运行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
