@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="之前通过WindowManager添加一像素的View来进行进程保活，虽然不会显示在最近任务列表中，也不会响应主页键和后退键，但是进程的oom_adj值4，且在灭屏后，进程还会被系统给清理掉，通过一像素的窗口保活也有其适用范围。那么网上说的一像素Activity可不可以试试呢？有时间也不妨试试。">
+<meta name="keywords" content="Android,进程保活,1像素Activity">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android进程保活之一像素Activity">
+<meta property="og:url" content="http://www.ihuntto.com/2019/03/31/Android进程保活之一像素Activity/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="之前通过WindowManager添加一像素的View来进行进程保活，虽然不会显示在最近任务列表中，也不会响应主页键和后退键，但是进程的oom_adj值4，且在灭屏后，进程还会被系统给清理掉，通过一像素的窗口保活也有其适用范围。那么网上说的一像素Activity可不可以试试呢？有时间也不妨试试。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.ihuntto.com/2019/03/31/Android进程保活之一像素Activity/one_pixel_activity.png">
+<meta property="og:updated_time" content="2019-03-31T08:10:17.695Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android进程保活之一像素Activity">
+<meta name="twitter:description" content="之前通过WindowManager添加一像素的View来进行进程保活，虽然不会显示在最近任务列表中，也不会响应主页键和后退键，但是进程的oom_adj值4，且在灭屏后，进程还会被系统给清理掉，通过一像素的窗口保活也有其适用范围。那么网上说的一像素Activity可不可以试试呢？有时间也不妨试试。">
+<meta name="twitter:image" content="http://www.ihuntto.com/2019/03/31/Android进程保活之一像素Activity/one_pixel_activity.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.ihuntto.com/2019/03/31/Android进程保活之一像素Activity/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android进程保活之一像素Activity | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.ihuntto.com/2019/03/31/Android进程保活之一像素Activity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android进程保活之一像素Activity
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-31 16:06:47 / Modified: 16:10:17" itemprop="dateCreated datePublished" datetime="2019-03-31T16:06:47+08:00">2019-03-31</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/性能优化/" itemprop="url" rel="index"><span itemprop="name">性能优化</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前<a href="https://www.ihuntto.com/2019/03/24/Android%E8%BF%9B%E7%A8%8B%E4%BF%9D%E6%B4%BB%E4%B9%8B%E4%B8%80%E5%83%8F%E7%B4%A0%E6%82%AC%E6%B5%AE%E7%AA%97/">通过<code>WindowManager</code>添加一像素的<code>View</code>来进行进程保活</a>，虽然不会显示在最近任务列表中，也不会响应主页键和后退键，但是进程的oom_adj值4，且在灭屏后，进程还会被系统给清理掉，通过一像素的窗口保活也有其适用范围。那么网上说的一像素<code>Activity</code>可不可以试试呢？有时间也不妨试试。</p>
+<a id="more"></a>
+<hr>
+<h2 id="实现OnePixelActivity"><a href="#实现OnePixelActivity" class="headerlink" title="实现OnePixelActivity"></a>实现OnePixelActivity</h2><ol>
+<li>来看看<code>OnePixelActivity</code>的代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class OnePixelActivity extends Activity &#123;</span><br><span class="line">    private static final int WINDOW_SIZE = BuildConfig.DEBUG ? 10 : 1;</span><br><span class="line">    private static final int WINDOW_COLOR = BuildConfig.DEBUG ? Color.RED : Color.TRANSPARENT;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_one_pixel);</span><br><span class="line"></span><br><span class="line">        WindowManager.LayoutParams attributes = getWindow().getAttributes();</span><br><span class="line"></span><br><span class="line">        attributes.dimAmount = 0.0f;</span><br><span class="line">        attributes.x = 0;</span><br><span class="line">        attributes.y = 0;</span><br><span class="line">        attributes.width = WINDOW_SIZE;</span><br><span class="line">        attributes.height = WINDOW_SIZE;</span><br><span class="line">        attributes.gravity = Gravity.TOP | Gravity.END;</span><br><span class="line">        getWindow().setAttributes(attributes);</span><br><span class="line"></span><br><span class="line">        getWindow().getDecorView().setBackgroundColor(WINDOW_COLOR);</span><br><span class="line">        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,</span><br><span class="line">                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这里先通过<code>OnePixelActivity</code>大小和背景色区分调试模式，其次将<code>OnePixelActivity</code>放置在右上角，最后设置<code>OnePixelActivity</code>不响应触摸。不过现在启动它还不是1像素大小。</p>
+<ol start="2">
+<li>现在需要设置主题样式才能让<code>OnePixelActivity</code>显示成1像素大小：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity</span><br><span class="line">    android:name=&quot;.OnePixelActivity&quot;</span><br><span class="line">    android:configChanges=&quot;orientation|keyboard|screenSize&quot;</span><br><span class="line">    android:launchMode=&quot;singleInstance&quot;</span><br><span class="line">    android:theme=&quot;@style/OnePixelTheme&quot; /&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>启动模式设置为单例模式。<code>OnePixelTheme</code>定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;resources&gt;</span><br><span class="line">    &lt;style name=&quot;OnePixelTheme&quot; parent=&quot;android:Theme.Dialog&quot;&gt;</span><br><span class="line">        &lt;item name=&quot;android:windowCloseOnTouchOutside&quot;&gt;false&lt;/item&gt;</span><br><span class="line">        &lt;item name=&quot;android:windowNoTitle&quot;&gt;true&lt;/item&gt;</span><br><span class="line">        &lt;item name=&quot;android:windowIsFloating&quot;&gt;true&lt;/item&gt;</span><br><span class="line">        &lt;item name=&quot;android:windowIsTranslucent&quot;&gt;true&lt;/item&gt;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">&lt;/resources&gt;</span><br></pre></td></tr></table></figure></p>
+<p><code>OnePixelActivity</code>已经实现好了，现在只需要在合适的地方启动它就可以了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        startActivity(new Intent(MainActivity.this, OnePixelActivity.class));</span><br><span class="line">        finish();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果顺利的话可以看到如下效果：</p>
+<p><img src="one_pixel_activity.png" width="300" align="center"><br>查看oom_adj的值也为0。</p>
+<h2 id="启动时机"><a href="#启动时机" class="headerlink" title="启动时机"></a>启动时机</h2><p>虽然1像素<code>Activity</code>可以呈现出来了，但是还有以下问题：</p>
+<ol>
+<li><p><code>Activity</code>启动后会在最近任务列表中出现；</p>
+</li>
+<li><p><code>Activity</code>在清理最近任务时会被清理掉；</p>
+</li>
+<li><p><code>Activity</code>会响应Back和Home键；</p>
+</li>
+<li><p>其它<code>Activity</code>启动时，1像素<code>Activity</code>会退到后台，或者被销毁。</p>
+</li>
+</ol>
+<p>因此1像素<code>Activity</code>无法长期保留在前台，正确的启动时机才能起到保活的作用，所以常见的做法是在灭屏时启动1像素<code>Activity</code>，在亮屏时再退出。</p>
+<h3 id="灭屏启动"><a href="#灭屏启动" class="headerlink" title="灭屏启动"></a>灭屏启动</h3><p>可以监听灭屏广播来启动<code>OnePixelActivity</code>，将灭屏广播静态注册到<code>AndroidManifest.xml</code>文件中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;receiver</span><br><span class="line">    android:name=&quot;.ScreenOffReceiver&quot;</span><br><span class="line">    android:enabled=&quot;true&quot;</span><br><span class="line">    android:exported=&quot;true&quot;&gt;</span><br><span class="line">    &lt;intent-filter&gt;</span><br><span class="line">        &lt;action android:name=&quot;android.intent.action.SCREEN_OFF&quot; /&gt;</span><br><span class="line">    &lt;/intent-filter&gt;</span><br><span class="line">&lt;/receiver&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后再<code>ScreenOffReceiver</code>中启动<code>OnePixelActivity</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class ScreenOffReceiver extends BroadcastReceiver &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">        String action = intent.getAction();</span><br><span class="line">        if (Intent.ACTION_SCREEN_OFF.equalsIgnoreCase(action)) &#123;</span><br><span class="line">            context.startActivity(new Intent(context, OnePixelActivity.class));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>本以为在灭屏时可以启动<code>OnePixelActivity</code>，但是并没有如愿以偿，因为：</p>
+<blockquote>
+<p>Beginning with Android 8.0 (API level 26), the system imposes additional restrictions on manifest-declared receivers. If your app targets API level 26 or higher, you cannot use the manifest to declare a receiver for most implicit broadcasts (broadcasts that do not target your app specifically).</p>
+</blockquote>
+<h3 id="动态注册广播启动"><a href="#动态注册广播启动" class="headerlink" title="动态注册广播启动"></a>动态注册广播启动</h3><p>所以应该在后台<code>Service</code>的代码中动态注册灭屏广播接收器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public class ScreenOffService extends Service &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public IBinder onBind(Intent intent) &#123;</span><br><span class="line">        // TODO: Return the communication channel to the service.</span><br><span class="line">        throw new UnsupportedOperationException(&quot;Not yet implemented&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate() &#123;</span><br><span class="line">        super.onCreate();</span><br><span class="line">        registerReceiver();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void registerReceiver() &#123;</span><br><span class="line">        IntentFilter filter = new IntentFilter();</span><br><span class="line">        filter.addAction(Intent.ACTION_SCREEN_OFF);</span><br><span class="line">        registerReceiver(mScreenStateReceiver, filter);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private BroadcastReceiver mScreenStateReceiver = new BroadcastReceiver() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">            if (Intent.ACTION_SCREEN_OFF.equalsIgnoreCase(intent.getAction())) &#123;</span><br><span class="line">                startActivity(new Intent(context, OnePixelActivity.class));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onDestroy() &#123;</span><br><span class="line">        super.onDestroy();</span><br><span class="line">        unregisterReceiver();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void unregisterReceiver() &#123;</span><br><span class="line">        unregisterReceiver(mScreenStateReceiver);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="亮屏退出"><a href="#亮屏退出" class="headerlink" title="亮屏退出"></a>亮屏退出</h3><p>亮屏时关闭<code>OnePixelActivity</code>。通过动态注册亮屏广播，当收到广播时关闭<code>OnePixelActivity</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">public class OnePixelActivity extends Activity &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    private boolean mScreenOnRegistered = false;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_one_pixel);</span><br><span class="line"></span><br><span class="line">        ... ...</span><br><span class="line"></span><br><span class="line">        registerReceiver();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void registerReceiver() &#123;</span><br><span class="line">        if (!mScreenOnRegistered) &#123;</span><br><span class="line">            IntentFilter filter = new IntentFilter();</span><br><span class="line">            filter.addAction(Intent.ACTION_SCREEN_ON);</span><br><span class="line">            registerReceiver(mScreenOnReceiver, filter);</span><br><span class="line">            mScreenOnRegistered = true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private BroadcastReceiver mScreenOnReceiver = new BroadcastReceiver() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">            if (Intent.ACTION_SCREEN_ON.equalsIgnoreCase(intent.getAction())) &#123;</span><br><span class="line">                unregisterReceiver();</span><br><span class="line">                finish();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    private void unregisterReceiver() &#123;</span><br><span class="line">        if (mScreenOnRegistered) &#123;</span><br><span class="line">            unregisterReceiver(mScreenOnReceiver);</span><br><span class="line">            mScreenOnRegistered = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onDestroy() &#123;</span><br><span class="line">        super.onDestroy();</span><br><span class="line">        unregisterReceiver();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果ROM厂商没有把亮灭屏广播给禁止的话，就可以正常工作的。灭屏后，通过adb命令可以查看oom_adj值为0。通过提升进程的oom_adj值来保活进程的目的基本达到了，但是各系统厂商和Android版本更新会带来各种变数。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过1像素<code>Activity</code>来保活进程，需要亮屏时进程还在运行，才能接收到灭屏广播，并启动1像素<code>Activity</code>，再到亮屏时关闭它。Android进程保活之路对于我来说还很漫长，毕竟平时我开发Android应用基本不需要保活(系统特权)，没准儿哪天需要在<code>ActivityManagerService</code>中通过判断<code>Activity</code>的大小来清理流氓进程。要消灭它，就要先了解它。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>[1]  <a href="https://www.jianshu.com/p/2c4f2586ed6f" target="_blank" rel="noopener">实现谣传QQ中的手段——“1像素页面保活”</a><br>[2]  <a href="https://www.cnblogs.com/seem/p/5806298.html" target="_blank" rel="noopener">非全屏Activity实现，以及触摸消息的处理</a><br>[3]  <a href="https://blog.csdn.net/xiexiaotian11/article/details/81939390" target="_blank" rel="noopener">安卓8.0静态注册广播不能用的问题</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/进程保活/" rel="tag"># 进程保活</a>
+          
+            <a href="/tags/1像素Activity/" rel="tag"># 1像素Activity</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/31/记SDK发布/" rel="next" title="记SDK发布">
+                <i class="fa fa-chevron-left"></i> 记SDK发布
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现OnePixelActivity"><span class="nav-number">1.</span> <span class="nav-text">实现OnePixelActivity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动时机"><span class="nav-number">2.</span> <span class="nav-text">启动时机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#灭屏启动"><span class="nav-number">2.1.</span> <span class="nav-text">灭屏启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态注册广播启动"><span class="nav-number">2.2.</span> <span class="nav-text">动态注册广播启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#亮屏退出"><span class="nav-number">2.3.</span> <span class="nav-text">亮屏退出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

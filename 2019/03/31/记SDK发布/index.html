@@ -117,7 +117,7 @@
 <meta property="og:description" content="问题描述 对外发布SDK，SDK以aar格式发布，如sdk.aar； sdk.aar依赖于video.aar、audio.aar和file.aar，且这些aar都不能发布到公司外网的Meavn上，但均托管在公司内网的Meavn上。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.ihuntto.com/2019/03/31/记SDK发布/flowchart_of_zip_aars.png">
-<meta property="og:updated_time" content="2019-03-31T03:07:14.768Z">
+<meta property="og:updated_time" content="2019-03-31T03:34:32.412Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记SDK发布">
 <meta name="twitter:description" content="问题描述 对外发布SDK，SDK以aar格式发布，如sdk.aar； sdk.aar依赖于video.aar、audio.aar和file.aar，且这些aar都不能发布到公司外网的Meavn上，但均托管在公司内网的Meavn上。">
@@ -333,7 +333,7 @@
                 
               
 
-              <time title="Created: 2019-03-31 10:49:56 / Modified: 11:07:14" itemprop="dateCreated datePublished" datetime="2019-03-31T10:49:56+08:00">2019-03-31</time>
+              <time title="Created: 2019-03-31 10:49:56 / Modified: 11:34:32" itemprop="dateCreated datePublished" datetime="2019-03-31T10:49:56+08:00">2019-03-31</time>
             
 
             
@@ -459,8 +459,8 @@
 <p>执性命令<code>./gradlew compressAars</code>将临时目录打包成zip，并根据artifactId和versionName命名zip文件。至于为什么放在build/outputs目录下，是因为Clean时可以把这些生成的文件都清理掉。</p>
 <p>之前都是一步步的执行命令，现在可以执行一条命令代替之前所有的命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew sdk:assemble copyAarsFromCacheToTemp copySdkToTemp compressAars</span><br></pre></td></tr></table></figure></p>
 <p>现在所有工作都做完了。总的流程图如下：<br><img src="flowchart_of_zip_aars.png" width="300" align="center"></p>
-<h2 id="问题延伸"><a href="#问题延伸" class="headerlink" title="问题延伸"></a>问题延伸</h2><p>现在虽然解决了aar打包问题，但是如果还要给sdk出demo的时候，那应该怎么做？手动打包还是每次编译时自动处理呢？我觉得能不动手就不动手，能少动手就少动手。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在解决编译打包问题时，应该尽量从省时省力的角度出发，并从长远的角度出发，选择大家能够参与的方式处理问题，以便于今后的维护。</p>
+<h2 id="问题延伸"><a href="#问题延伸" class="headerlink" title="问题延伸"></a>问题延伸</h2><p>虽然现在解决了aar打包的问题，但是如果还要给sdk出demo的时候，那应该怎么做？手动打包还是每次编译时自动处理呢？我觉得能不动手就不动手，能少动手就少动手。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在解决编译打包问题时，应该尽量从省时省力和长远的角度出发，选择大家能够参与的方式处理问题，以便于今后的维护。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
 <li><a href="https://segmentfault.com/q/1010000012422216" target="_blank" rel="noopener">gradle 修改文件内容</a></li>
 <li><a href="https://blog.csdn.net/liumiaocn/article/details/84230280" target="_blank" rel="noopener">Gradle基础：5:task的依赖与执行条件</a></li>
@@ -518,6 +518,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/31/Android进程保活之一像素Activity/" rel="prev" title="Android进程保活之一像素Activity">
+                Android进程保活之一像素Activity <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -591,7 +595,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -701,7 +705,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">26</span>
+                      
+                    
+                    <span class="site-state-item-count">27</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
