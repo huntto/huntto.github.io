@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="且行且记">
 <meta property="og:description" content="在AOP编程初体验中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：  增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。 增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。 如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-05-01T07:13:55.896Z">
+<meta property="og:updated_time" content="2019-05-01T10:41:22.590Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android注解处理器之编译插入Log代码">
 <meta name="twitter:description" content="在AOP编程初体验中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：  增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。 增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。 如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自">
@@ -331,7 +331,7 @@
                 
               
 
-              <time title="Created: 2019-05-01 14:49:29 / Modified: 15:13:55" itemprop="dateCreated datePublished" datetime="2019-05-01T14:49:29+08:00">2019-05-01</time>
+              <time title="Created: 2019-05-01 14:49:29 / Modified: 18:41:22" itemprop="dateCreated datePublished" datetime="2019-05-01T14:49:29+08:00">2019-05-01</time>
             
 
             
@@ -393,7 +393,7 @@
 <li>增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。</li>
 <li>如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自己编写注解处理器之编译插入Log代码的主要原因之一。</li>
 </ul>
-<p>当然它也有很多优势，如功能和切入点丰富，可以在不修改原有代码的情况下在编译阶段插入想要的代码，如果过想要了解其中的原理，可以把本文作为入门之选。</p>
+<p>当然它也有很多优势，如功能和切入点丰富，可以在不修改原有代码的情况下在编译阶段插入想要的代码，如果想要了解其中的原理，可以把本文作为入门之选。</p>
 <a id="more"></a>
 <h2 id="Log代码插入点"><a href="#Log代码插入点" class="headerlink" title="Log代码插入点"></a>Log代码插入点</h2><p>本例的主要目的是将Log代码作为第一行代码插入到方法之中。具体的插入代码如下所示：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    private void sayHello(String toWho) &#123;</span><br><span class="line">        // 以下为插入的log代码</span><br><span class="line">        android.util.Log.d(&quot;Person&quot;, &quot;sayHello(toWho = &quot; + toWho + &quot; )&quot;);</span><br><span class="line">        // 以上为插入的log代码</span><br><span class="line">        System.out.println(&quot;Hello &quot; + toWho);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -469,7 +469,7 @@
 </ol>
 <p>代码中的每个类从其名称中大概可以推断出其意思，如<code>JCExpression</code>为表达式、<code>JCStatement</code>相当于一条语句，这就不难理解，先生成<code>&quot;param1 = &quot; + param1 + &quot; param2 = &quot; + param2</code>类似的表达式，param的数量取决于被注解类方法的参数数量 ；后利用表达式生成<code>android.util.Log.d(tag, expression)</code>语句。如果不能理解具体的意思，还可以充分利用<code>note</code>方法输出帮助信息，当然可以查看官方文档(不过我没有找到 -_-||)。</p>
 <blockquote>
-<p>到这里你可能会问，<code>@SimpleLog</code>为什么不注解在方法上呢？其实最开始我的尝试是同时注解在方法和类上的，但是注解在方法上时，从<code>note</code>方法输出的信息来看，代码已经注入其中，但从最终的Log输出来看并未有注入的代码，为了谨慎起见，暂时放弃注解在方法上，后续有机会再深入研究。</p>
+<p>到这里你可能会问，<code>@SimpleLog</code>为什么不注解在方法上呢？其实最开始我的尝试是同时注解在方法和类上的，当注解在方法上时，从<code>note</code>方法输出的信息来看，代码已经注入其中，但从最终的Log输出来看并未有注入的代码，因此为了谨慎起见，暂时放弃注解在方法上，后续有机会再深入研究。</p>
 </blockquote>
 <h2 id="使用注解和注解处理器"><a href="#使用注解和注解处理器" class="headerlink" title="使用注解和注解处理器"></a>使用注解和注解处理器</h2><p>前面已经编写好注解和注解处理器，现在需要将它们应用到实际项目中。在AndroidStudio中新建一个Android Phone &amp; Tablet Module(如果已经存在，可以使用已有的)。首先在build.gradle文件中添加必要的依赖：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    implementation project(&apos;:log-annotation&apos;)</span><br><span class="line">    annotationProcessor project(&apos;:log-compiler&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
