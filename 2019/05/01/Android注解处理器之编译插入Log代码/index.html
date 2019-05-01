@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在AOP编程初体验中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：  增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。 增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。 如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自">
+<meta name="keywords" content="Android,注解处理器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android注解处理器之编译插入Log代码">
+<meta property="og:url" content="http://www.ihuntto.com/2019/05/01/Android注解处理器之编译插入Log代码/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="在AOP编程初体验中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：  增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。 增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。 如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-05-01T07:10:37.623Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android注解处理器之编译插入Log代码">
+<meta name="twitter:description" content="在AOP编程初体验中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：  增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。 增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。 如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.ihuntto.com/2019/05/01/Android注解处理器之编译插入Log代码/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android注解处理器之编译插入Log代码 | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.ihuntto.com/2019/05/01/Android注解处理器之编译插入Log代码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android注解处理器之编译插入Log代码
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-05-01 14:49:29 / Modified: 15:10:37" itemprop="dateCreated datePublished" datetime="2019-05-01T14:49:29+08:00">2019-05-01</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在<a href="https://huntto.github.io/2019/02/27/AOP编程初体验/" target="_blank" rel="noopener">AOP编程初体验</a>中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：</p>
+<ul>
+<li>增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。</li>
+<li>增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。</li>
+<li>如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自己编写注解处理器之编译插入Log代码的主要原因之一。</li>
+</ul>
+<p>当然它也有很多优势，如功能和切入点丰富，可以在不修改原有代码的情况下在编译阶段插入想要的代码，如果过想要了解其中的原理，可以把本文作为入门之选。</p>
+<a id="more"></a>
+<h2 id="Log代码插入点"><a href="#Log代码插入点" class="headerlink" title="Log代码插入点"></a>Log代码插入点</h2><p>本例的主要目的是将Log代码作为第一行代码插入到方法之中。具体的插入代码如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">	... ...</span><br><span class="line">    private void sayHello(String toWho) &#123;</span><br><span class="line">        // 以下为插入的log代码</span><br><span class="line">        android.util.Log.d(&quot;Person&quot;, &quot;sayHello(toWho = &quot; + toWho + &quot; )&quot;);</span><br><span class="line">        // 以上为插入的log代码</span><br><span class="line">        System.out.println(&quot;Hello &quot; + toWho);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在已经知道代码的插入点以及插入代码的具体形式，那么接下来就要开始正式编写注解和注解处理器了。</p>
+<h2 id="定义注解"><a href="#定义注解" class="headerlink" title="定义注解"></a>定义注解</h2><p>在编写注解处理器之前，有必要先了解一下注解。</p>
+<blockquote>
+<p>注解(也被称为元数据)为我们在代码中添加信息提供了一种形式化的方法，使我们可以在稍后某个时刻非常方便地使用这些数据。 — Java编程思想</p>
+</blockquote>
+<p>定义总是那么言简意赅，还是来看实际的例子，对于Android Java开发者来说，对以下注解并不陌生：</p>
+<ul>
+<li><code>@Override</code>，表示当前方法覆盖了父类的方法，如果在没有覆盖父类的方法上使用了该注解，编译器或者IDE就会报错；</li>
+<li><code>@Deprecated</code>，表示被注解的元素已经过时了，建议程序员不要再使用了；</li>
+<li><code>@SuppressWarning</code>，顾名思义，就是抑制编译器警告。</li>
+</ul>
+<p>这些都是内置注解，不过在本例中我们要编写自己的注解和注解处理器。先来定义本例中要使用的注解<code>@SimpleLog</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Retention(RetentionPolicy.SOURCE)</span><br><span class="line">@Target(&#123;ElementType.TYPE&#125;)</span><br><span class="line">public @interface SimpleLog &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>@Rentention</code>和<code>@Target</code>为元注解，元注解可以理解为可以使用在注解上的注解。对于内置元注解的解释如下：</p>
+<table>
+<thead>
+<tr>
+<th>元注解</th>
+<th style="text-align:left">意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@Target</code></td>
+<td style="text-align:left">表示该注解可以用于什么地方。可能的ElementType参数包括：<br><strong>CONSTRUCTOR</strong>：构造函数<br><strong>FIELD</strong>：域(包括enum实例)，也就是内部成员变量<br><strong>LOCAL_VARIABLE</strong>：局部变量<br><strong>METHOD</strong>：方法<br><strong>PACKAGE</strong>：包<br><strong>PARAMETER</strong>：参数<br><strong>TYPE</strong>：类、接口(包括注解类型)或enum</td>
+</tr>
+<tr>
+<td><code>@Retention</code></td>
+<td style="text-align:left">表示该注解信息需要保留到什么阶段。可选的RetentionPolicy参数包括：<br><strong>SOURCE</strong>：注解只保留在源码(.java)阶段，会被编译器丢弃。<br><strong>CLASS</strong>：注解将被保留到class文件阶段，但会被VM丢弃。<br><strong>RUNTIME</strong>：注解将会被保留到运行时阶段，因此可以通过反射机制读取注解的信息。</td>
+</tr>
+<tr>
+<td><code>@Documented</code></td>
+<td style="text-align:left">将此注解包含到Javadoc中。</td>
+</tr>
+<tr>
+<td><code>@Inherited</code></td>
+<td style="text-align:left">允许子类继承父类中的注解。</td>
+</tr>
+</tbody>
+</table>
+<p>首先<code>@SimpleLog</code>注解只需要保留源文件中，当通过编译后就将其丢弃，因为运行时不需要通过反射获取信息；其次<code>@SimpleLog</code>暂时只能用于注解类。那么这个<code>@SimpleLog</code>应该放在何处呢？在AndroidStudio中新建一个Java Library Module，Module名为<strong>log-annotation</strong>，然后将<code>@SimpleLog</code>放在此Module中。</p>
+<h2 id="编写注解处理器"><a href="#编写注解处理器" class="headerlink" title="编写注解处理器"></a>编写注解处理器</h2><p>在使用AndroidStudio编写注解处理器之前，可以先看看<a href="http://developer.51cto.com/art/201305/392858.htm" target="_blank" rel="noopener">Javac黑客指南</a>这篇文章，然后一步步按照文章的指引敲一遍代码和命令。当然也可以直接进入主题，在AndroidStudio中新建Java Library Module，Module名为<strong>log-compiler</strong>。</p>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>为了方便后续的工作，先在<code>log-compiler</code>的<strong>build.gradle</strong>文件中添加依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;java-library&apos;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    implementation fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])</span><br><span class="line">    implementation project(&apos;:log-annotation&apos;)</span><br><span class="line">    implementation &apos;com.google.auto.service:auto-service:1.0-rc5&apos;</span><br><span class="line">    implementation files(org.gradle.internal.jvm.Jvm.current().toolsJar)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sourceCompatibility = &quot;7&quot;</span><br><span class="line">targetCompatibility = &quot;7&quot;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>log-compiler</strong>依赖于<strong>log-annotation</strong>；</li>
+<li>使用<code>auto-service</code>库可以不用编写<code>javax.annotation.processing.Processor</code>文件；</li>
+<li><code>files(org.gradle.internal.jvm.Jvm.current().toolsJar)</code>为本地环境中<code>tools.jar</code>的位置，<code>tools.jar</code>位于<code>/Library/Java/JavaVirtualMachines/jdk1.8.0_192.jdk/Contents/Home/lib</code>目录下，对于不同的电脑，位置不一样，所以使用环境变量最好。</li>
+</ol>
+<h3 id="注解处理器"><a href="#注解处理器" class="headerlink" title="注解处理器"></a>注解处理器</h3><p>接下来就是定义注解处理器了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">@AutoService(Processor.class)</span><br><span class="line">public class SimpleLogProcessor extends AbstractProcessor &#123;</span><br><span class="line">    private Trees trees;</span><br><span class="line">    private SimpleLogTranslator visitor;</span><br><span class="line">    private Messager messager;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public synchronized void init(ProcessingEnvironment processingEnv) &#123;</span><br><span class="line">        super.init(processingEnv);</span><br><span class="line">        trees = Trees.instance(processingEnv);</span><br><span class="line">        messager = processingEnv.getMessager();</span><br><span class="line">        Context context = ((JavacProcessingEnvironment)</span><br><span class="line">                processingEnv).getContext();</span><br><span class="line">        visitor = new SimpleLogTranslator(TreeMaker.instance(context), Names.instance(context).table, messager);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Set&lt;String&gt; getSupportedAnnotationTypes() &#123;</span><br><span class="line">        HashSet&lt;String&gt; supportTypes = new LinkedHashSet&lt;&gt;();</span><br><span class="line">        supportTypes.add(SimpleLog.class.getCanonicalName());</span><br><span class="line">        return supportTypes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public SourceVersion getSupportedSourceVersion() &#123;</span><br><span class="line">        return SourceVersion.RELEASE_7;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean process(Set&lt;? extends TypeElement&gt; annotations, RoundEnvironment roundEnv) &#123;</span><br><span class="line">        if (!roundEnv.processingOver()) &#123;</span><br><span class="line">            Set&lt;? extends Element&gt; elements =</span><br><span class="line">                    roundEnv.getElementsAnnotatedWith(SimpleLog.class);</span><br><span class="line">            for (Element each : elements) &#123;</span><br><span class="line">                if (each.getKind() == ElementKind.CLASS) &#123;</span><br><span class="line">                    messager.printMessage(Diagnostic.Kind.NOTE, &quot;handle element: &quot; + each.getSimpleName());</span><br><span class="line">                    JCTree jcTree = (JCTree) trees.getTree(each);</span><br><span class="line">                    if (jcTree != null) &#123;</span><br><span class="line">                        visitor.setTag(each.getKind() == ElementKind.CLASS ?</span><br><span class="line">                                each.getSimpleName().toString() :</span><br><span class="line">                                each.getEnclosingElement().getSimpleName().toString());</span><br><span class="line">                        jcTree.accept(visitor);</span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        messager.printMessage(Diagnostic.Kind.NOTE, &quot;&gt;&gt; jctree is null.&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>使用<code>@AutoService</code>注解，<code>javax.annotation.processing.Processor</code>文件会自动生成；</li>
+<li>重写<code>init</code>方法，<code>init</code>方法调用时可以保存必要的环境变量；</li>
+<li><code>getSupportedAnnotationTypes</code>方法需要返回支持的注解，也就是前面定义的<code>@SimpleLog</code>；</li>
+<li><code>getSupportedSourceVersion</code>返回支持java版本；</li>
+<li><code>process</code>方法为主要的核心处理方法，找到被<code>@SimpleLog</code>注解的元素，然后获取注解元素的类名，也就是Log的tag，最后使用自定义的<code>TreeTranslator</code>来添加Log代码。</li>
+</ol>
+<blockquote>
+<p>注解处理器的process阶段可以生产新的java类代码，如<a href="https://github.com/JakeWharton/butterknife" target="_blank" rel="noopener">butterknife</a>，如果生产新的java类代码，最终要使用这个类，还需要利用反射来实现，反射效率问题，所以本例不使用该方法，如果感兴趣可以看这篇教程<a href="https://blog.mindorks.com/android-annotation-processing-tutorial-part-1-a-practical-approach" target="_blank" rel="noopener">Android Annotation Processing Tutorial</a>学习如何实现butterknife。</p>
+</blockquote>
+<h3 id="编译时添加Log代码"><a href="#编译时添加Log代码" class="headerlink" title="编译时添加Log代码"></a>编译时添加Log代码</h3><p>本例主要利用注解处理在编译阶段插入Log代码到.class文件中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">class SimpleLogTranslator extends TreeTranslator &#123;</span><br><span class="line"></span><br><span class="line">    private TreeMaker mTreeMaker;</span><br><span class="line">    private Name.Table mNames;</span><br><span class="line">    private Messager mMessager;</span><br><span class="line">    private String mTag;</span><br><span class="line">    private JCTree.JCExpression mTagExpression;</span><br><span class="line"></span><br><span class="line">    SimpleLogTranslator(TreeMaker treeMaker, Name.Table names, Messager messager) &#123;</span><br><span class="line">        mTreeMaker = treeMaker;</span><br><span class="line">        mNames = names;</span><br><span class="line">        mMessager = messager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void setTag(@Nonnull String tag) &#123;</span><br><span class="line">        mTag = tag;</span><br><span class="line">        mTagExpression = mTreeMaker.Literal(tag);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) &#123;</span><br><span class="line">        super.visitMethodDef(jcMethodDecl);</span><br><span class="line">        note(&quot;visit:&quot; + jcMethodDecl.getName());</span><br><span class="line"></span><br><span class="line">        JCTree.JCStatement logStatement = generateLogStatement(jcMethodDecl);</span><br><span class="line"></span><br><span class="line">        addLogToMethod(jcMethodDecl, logStatement);</span><br><span class="line"></span><br><span class="line">        note(&quot;added SimpleLog to method &quot; + jcMethodDecl.name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void addLogToMethod(JCTree.JCMethodDecl jcMethodDecl, JCTree.JCStatement logStatement) &#123;</span><br><span class="line">        ListBuffer&lt;JCTree.JCStatement&gt; statements = new ListBuffer&lt;&gt;();</span><br><span class="line">        List&lt;JCTree.JCStatement&gt; methodStatements = jcMethodDecl.getBody().getStatements();</span><br><span class="line">        if (methodStatements.size() &gt; 0) &#123;</span><br><span class="line">            JCTree.JCStatement firstStatement = methodStatements.get(0);</span><br><span class="line">            // super(...) statement must before log statement in constructor</span><br><span class="line">            if (firstStatement.toString().startsWith(&quot;super(&quot;)) &#123;</span><br><span class="line">                statements.append(firstStatement);</span><br><span class="line">                statements.append(logStatement);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                statements.append(logStatement);</span><br><span class="line">                statements.append(firstStatement);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            statements.add(logStatement);</span><br><span class="line">        &#125;</span><br><span class="line">        for (int i = 1; i &lt; methodStatements.size(); i++) &#123;</span><br><span class="line">            statements.append(jcMethodDecl.getBody().getStatements().get(i));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        JCTree.JCBlock body = mTreeMaker.Block(0, statements.toList());</span><br><span class="line"></span><br><span class="line">        result = mTreeMaker.MethodDef(</span><br><span class="line">                jcMethodDecl.getModifiers(),</span><br><span class="line">                mNames.fromString(jcMethodDecl.getName().toString()),</span><br><span class="line">                jcMethodDecl.restype,</span><br><span class="line">                jcMethodDecl.getTypeParameters(),</span><br><span class="line">                jcMethodDecl.getParameters(),</span><br><span class="line">                jcMethodDecl.getThrows(),</span><br><span class="line">                body,</span><br><span class="line">                jcMethodDecl.defaultValue</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * generate statement of android.util.Log.d(TAG, params = values);</span><br><span class="line">     */</span><br><span class="line">    private JCTree.JCStatement generateLogStatement(JCTree.JCMethodDecl jcMethodDecl) &#123;</span><br><span class="line">        JCTree.JCFieldAccess logMethod = mTreeMaker.Select(</span><br><span class="line">                mTreeMaker.Select(</span><br><span class="line">                        mTreeMaker.Select(</span><br><span class="line">                                mTreeMaker.Ident(mNames.fromString(&quot;android&quot;)),</span><br><span class="line">                                mNames.fromString(&quot;util&quot;)</span><br><span class="line">                        ),</span><br><span class="line">                        mNames.fromString(&quot;Log&quot;)</span><br><span class="line">                ),</span><br><span class="line">                mNames.fromString(&quot;d&quot;)</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        JCTree.JCExpression msgExpression = generateLogMessageExpression(jcMethodDecl);</span><br><span class="line">        JCTree.JCMethodInvocation methodInvocation = mTreeMaker.Apply(</span><br><span class="line">                List.&lt;JCTree.JCExpression&gt;nil(),</span><br><span class="line">                logMethod,</span><br><span class="line">                List.of(mTagExpression, msgExpression)</span><br><span class="line">        );</span><br><span class="line">        return mTreeMaker.Exec(methodInvocation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * generate expression of param1 = value1, param2 = value2, ... ;</span><br><span class="line">     */</span><br><span class="line">    private JCTree.JCExpression generateLogMessageExpression(JCTree.JCMethodDecl jcMethodDecl) &#123;</span><br><span class="line">        JCTree.JCExpression msgExpression = mTreeMaker.Literal(jcMethodDecl.name.toString() + &quot;(&quot;);</span><br><span class="line">        if (jcMethodDecl.params.size() &gt; 0) &#123;</span><br><span class="line">            boolean first = true;</span><br><span class="line">            for (JCTree.JCVariableDecl jcVariableDecl : jcMethodDecl.params) &#123;</span><br><span class="line">                if (!first) &#123;</span><br><span class="line">                    // add ,</span><br><span class="line">                    msgExpression = mTreeMaker.Binary(JCTree.Tag.PLUS, msgExpression, mTreeMaker.Literal(&quot;, &quot;));</span><br><span class="line">                &#125;</span><br><span class="line">                if (jcVariableDecl.sym == null) &#123;</span><br><span class="line">                    continue;</span><br><span class="line">                &#125;</span><br><span class="line">                first = false;</span><br><span class="line">                JCTree.JCExpression paramName = mTreeMaker.Literal(jcVariableDecl.getName().toString() + &quot; = &quot;);</span><br><span class="line">                JCTree.JCExpression paramValue = mTreeMaker.Ident(jcVariableDecl);</span><br><span class="line">                msgExpression = mTreeMaker.Binary(</span><br><span class="line">                        JCTree.Tag.PLUS,</span><br><span class="line">                        msgExpression,</span><br><span class="line">                        mTreeMaker.Binary(JCTree.Tag.PLUS, paramName, paramValue)</span><br><span class="line">                );</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return mTreeMaker.Binary(JCTree.Tag.PLUS, msgExpression, mTreeMaker.Literal(&quot;)&quot;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void note(String msg) &#123;</span><br><span class="line">        mMessager.printMessage(Diagnostic.Kind.NOTE, mTag + &quot;: &quot; + msg);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好长一段代码，不过不要担心，分步解析。</p>
+<ol>
+<li><code>visitMethodDef</code>在编译处理被注解类的方法时，都会进入此方法，在这个阶段，可以添加Log代码到被注解类的方法中，当然还有其他<code>visit*</code>方法；</li>
+<li>首先定义一个<code>note</code>方法，在每次<strong>Build</strong>阶段输出必要的信息；</li>
+<li><code>generateLogStatement</code>根据前一步中传入的tag、访问方法的名称、参数名和参数值，生产Log的代码(也就是<code>JCTree.JCStatement</code>)；</li>
+<li><code>addLogToMethod</code>方法将<code>generateLogStatement</code>生产的<code>logStatement</code>插入被注解类方法的所有<code>statement</code>之前，也就是第一句代码。</li>
+</ol>
+<p>代码中的每个类从其名称中大概可以推断出其意思，如<code>JCExpression</code>为表达式、<code>JCStatement</code>相当于一条语句，这就不难理解，先生成<code>&quot;param1 = &quot; + param1 + &quot; param2 = &quot; + param2</code>类似的表达式，param的数量取决于被注解类方法的参数数量 ；后利用表达式生成<code>android.util.Log.d(tag, expression)</code>语句。如果不能理解具体的意思，还可以充分利用<code>note</code>方法输出帮助信息，当然可以查看官方文档(不过我没有找到 -_-||)。</p>
+<blockquote>
+<p>到这里你可能会问，<code>@SimpleLog</code>为什么不注解在方法上呢？其实最开始我的尝试是同时注解在方法和类上的，但是注解在方法上时，从<code>note</code>方法输出的信息来看，代码已经注入其中，但从最终的Log输出来看并未有注入的代码，为了谨慎起见，暂时放弃注解在方法上，后续有机会再深入研究。</p>
+</blockquote>
+<h2 id="使用注解和注解处理器"><a href="#使用注解和注解处理器" class="headerlink" title="使用注解和注解处理器"></a>使用注解和注解处理器</h2><p>前面已经编写好注解和注解处理器，现在需要将它们应用到实际项目中。在AndroidStudio中新建一个Android Phone &amp; Tablet Module(如果已经存在，可以使用已有的)。首先在build.gradle文件中添加必要的依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    implementation project(&apos;:log-annotation&apos;)</span><br><span class="line">    annotationProcessor project(&apos;:log-compiler&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其次在代码中使用注解，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">@SimpleLog</span><br><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onRestart() &#123;</span><br><span class="line">        super.onRestart();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onStart() &#123;</span><br><span class="line">        super.onStart();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onResume() &#123;</span><br><span class="line">        super.onResume();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onPause() &#123;</span><br><span class="line">        super.onPause();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onStop() &#123;</span><br><span class="line">        super.onStop();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onDestroy() &#123;</span><br><span class="line">        super.onDestroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么启动应用之后会得到如下的Log输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2019-05-01 14:30:59.038 7466-7466/? D/MainActivity: &lt;init&gt;()</span><br><span class="line">2019-05-01 14:30:59.045 7466-7466/? D/MainActivity: onCreate(savedInstanceState = null)</span><br><span class="line">2019-05-01 14:30:59.242 7466-7466/? D/MainActivity: onStart()</span><br><span class="line">2019-05-01 14:30:59.247 7466-7466/? D/MainActivity: onResume()</span><br><span class="line">2019-05-01 14:31:19.496 7466-7466/com.ihuntto.simplelogger.demo D/MainActivity: onPause()</span><br><span class="line">2019-05-01 14:31:19.524 7466-7466/com.ihuntto.simplelogger.demo D/MainActivity: onStop()</span><br></pre></td></tr></table></figure>
+<p>一个注解解决了大量样板代码的编写，的确是一个省时省力的好方法，应该合理的加以利用。</p>
+<p>到此，在Android中使用注解处理器插入Log代码已经接近尾声了，可能你还有很多不明白的地方，且还有很多待改善的地方，如果将<code>@SimpleLog</code>使用到接口和抽象类中会发生什么？读者不妨试试。</p>
+<h2 id="生成工具"><a href="#生成工具" class="headerlink" title="生成工具"></a>生成工具</h2><p>本例的代码托管在GitHub上：<a href="https://github.com/huntto/SimpleLogger" target="_blank" rel="noopener">SimpleLogger</a>。</p>
+<p>如果不想编写上面的代码，也可以在自己的项目中导入我的库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">implementation &apos;com.ihuntto:log-annotation:1.0.3&apos;</span><br><span class="line">annotationProcessor &apos;com.ihuntto:log-compiler:1.0.5&apos;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文主要介绍如何使用注解处理器在编译阶段插入Log代码。如果想要在一个类的所有方法中插入Log代码，可以在这个类上使用注解，那么每次调用这个类的方法时都会打印类名作为tag、方法名和参数名与参数值作为tag的日志输出，这样可以更加专注于业务代码实现上。本文只是一个引子，可以在此基础上区分日志等级、或者插入其他样板代码等。还是那句老话，当你发现自己做着重复工作时，就是时候做出改变了。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>[1] <a href="https://blog.mindorks.com/android-annotation-processing-tutorial-part-1-a-practical-approach" target="_blank" rel="noopener">Android Annotation Processing Tutorial</a><br>[2] <a href="http://developer.51cto.com/art/201305/392858.htm" target="_blank" rel="noopener">Javac黑客指南</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/注解处理器/" rel="tag"># 注解处理器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/06/记SDK发布之Demo打包/" rel="next" title="记SDK发布之Demo打包">
+                <i class="fa fa-chevron-left"></i> 记SDK发布之Demo打包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Log代码插入点"><span class="nav-number">1.</span> <span class="nav-text">Log代码插入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义注解"><span class="nav-number">2.</span> <span class="nav-text">定义注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写注解处理器"><span class="nav-number">3.</span> <span class="nav-text">编写注解处理器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加依赖"><span class="nav-number">3.1.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注解处理器"><span class="nav-number">3.2.</span> <span class="nav-text">注解处理器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译时添加Log代码"><span class="nav-number">3.3.</span> <span class="nav-text">编译时添加Log代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用注解和注解处理器"><span class="nav-number">4.</span> <span class="nav-text">使用注解和注解处理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成工具"><span class="nav-number">5.</span> <span class="nav-text">生成工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">7.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

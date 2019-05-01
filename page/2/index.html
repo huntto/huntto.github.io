@@ -285,6 +285,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.ihuntto.com/2018/09/01/Android中Java类加载耗时问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/01/Android中Java类加载耗时问题/" itemprop="url">
+                  Android中Java类加载耗时问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-01 18:23:51 / Modified: 19:02:56" itemprop="dateCreated datePublished" datetime="2018-09-01T18:23:51+08:00">2018-09-01</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>自己的练习项目<a href="https://github.com/huntto/Brush" target="_blank" rel="noopener">Brush</a>，是一个功能简单的绘制书写应用，在最后一个提交<a href="https://github.com/huntto/Brush/commit/0d146797c659ba601200d3041f1d3a54c4e86987" target="_blank" rel="noopener">add simulate after launch</a>之前，都存在一个问题，就是每次启动应用后，绘制第一条曲线的开始部分都是直线。<img src="/2018/09/01/Android中Java类加载耗时问题/brush.png" title="brush绘制">原因是Android会根据应用的处理能力（UI线程的处理速度），控制<code>MotionEvent</code>的上报频率，也就是<code>onTouchEvent</code>的触发频率。如果在UI线程中处理了耗时任务，那么<code>onTouchEvent</code>的触发频率就会非常低，在这种情况下，只通过<code>MotionEvent</code>的<code>getX</code>和<code>getY</code>方法来获取坐标值，根据数量极少的坐标点绘制贝塞尔曲线，有时就会出现近似直线的情况。<a href="https://github.com/huntto/Brush" target="_blank" rel="noopener">Brush</a>绘制第一条曲线的开始部分都是直线的问题，可以肯定的是UI线程中做了耗时操作，而且只有第一次中才存在。经过各种尝试，最后确定了是Java类加载耗时造成的。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/01/Android中Java类加载耗时问题/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://www.ihuntto.com/2018/08/23/Android中使用OpenSLES播放PCM音频/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1212,7 +1374,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1326,7 +1488,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">28</span>
+                      
+                    
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
