@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="且行且记">
 <meta property="og:description" content="在AOP编程初体验中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：  增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。 增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。 如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-05-01T07:10:37.623Z">
+<meta property="og:updated_time" content="2019-05-01T07:13:55.896Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android注解处理器之编译插入Log代码">
 <meta name="twitter:description" content="在AOP编程初体验中讨论了如何利用AspectJ在编译阶段插入Log代码，但是它也存在一些缺点，如：  增加方法数量。每在一个切入点插入代码，就会增加一个或者更多的方法。 增加整体包的大小。导入AspectJ会增加大概73K+的大小，对于现在的APP动则上百MB来说不算什么，但是为了几句简单的代码引入这么多代码实则没有必要。 如果切入点是方法，我暂时没有发现如何获取参数名和参数值，这也是为什么要自">
@@ -331,7 +331,7 @@
                 
               
 
-              <time title="Created: 2019-05-01 14:49:29 / Modified: 15:10:37" itemprop="dateCreated datePublished" datetime="2019-05-01T14:49:29+08:00">2019-05-01</time>
+              <time title="Created: 2019-05-01 14:49:29 / Modified: 15:13:55" itemprop="dateCreated datePublished" datetime="2019-05-01T14:49:29+08:00">2019-05-01</time>
             
 
             
@@ -396,7 +396,7 @@
 <p>当然它也有很多优势，如功能和切入点丰富，可以在不修改原有代码的情况下在编译阶段插入想要的代码，如果过想要了解其中的原理，可以把本文作为入门之选。</p>
 <a id="more"></a>
 <h2 id="Log代码插入点"><a href="#Log代码插入点" class="headerlink" title="Log代码插入点"></a>Log代码插入点</h2><p>本例的主要目的是将Log代码作为第一行代码插入到方法之中。具体的插入代码如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">	... ...</span><br><span class="line">    private void sayHello(String toWho) &#123;</span><br><span class="line">        // 以下为插入的log代码</span><br><span class="line">        android.util.Log.d(&quot;Person&quot;, &quot;sayHello(toWho = &quot; + toWho + &quot; )&quot;);</span><br><span class="line">        // 以上为插入的log代码</span><br><span class="line">        System.out.println(&quot;Hello &quot; + toWho);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    private void sayHello(String toWho) &#123;</span><br><span class="line">        // 以下为插入的log代码</span><br><span class="line">        android.util.Log.d(&quot;Person&quot;, &quot;sayHello(toWho = &quot; + toWho + &quot; )&quot;);</span><br><span class="line">        // 以上为插入的log代码</span><br><span class="line">        System.out.println(&quot;Hello &quot; + toWho);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>现在已经知道代码的插入点以及插入代码的具体形式，那么接下来就要开始正式编写注解和注解处理器了。</p>
 <h2 id="定义注解"><a href="#定义注解" class="headerlink" title="定义注解"></a>定义注解</h2><p>在编写注解处理器之前，有必要先了解一下注解。</p>
 <blockquote>
