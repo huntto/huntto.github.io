@@ -117,7 +117,7 @@
 <meta property="og:description" content="过去总是听到面向切面编程（Aspect Oriented Programming）话题，一直没有找到合适的机会去了解它。最近在不同项目之间切换，每次都要写一些重复的代码，想减轻一下工作量。正好每个项目都需要打log，那么就从最简单的打log开始吧。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.ihuntto.com/2019/02/27/AOP编程初体验/AOP_APK.png">
-<meta property="og:updated_time" content="2019-02-27T14:22:26.940Z">
+<meta property="og:updated_time" content="2019-05-01T12:21:55.837Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AOP编程初体验">
 <meta name="twitter:description" content="过去总是听到面向切面编程（Aspect Oriented Programming）话题，一直没有找到合适的机会去了解它。最近在不同项目之间切换，每次都要写一些重复的代码，想减轻一下工作量。正好每个项目都需要打log，那么就从最简单的打log开始吧。">
@@ -333,12 +333,24 @@
                 
               
 
-              <time title="Created: 2019-02-27 22:12:32 / Modified: 22:22:26" itemprop="dateCreated datePublished" datetime="2019-02-27T22:12:32+08:00">2019-02-27</time>
+              <time title="Created: 2019-02-27 22:12:32" itemprop="dateCreated datePublished" datetime="2019-02-27T22:12:32+08:00">2019-02-27</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-05-01 20:21:55" itemprop="dateModified" datetime="2019-05-01T20:21:55+08:00">2019-05-01</time>
               
             
           </span>
@@ -438,7 +450,7 @@
 </li>
 </ol>
 <p>其中<code>simplelogger-annotations</code>只包含注解类，而<code>simplelogger-aspect</code>只包含切面类。通过此方法可以在<code>release</code>版本中去除APK文件中<code>org.aspectj</code>包，还可以避免由于使用<code>@Logcat</code>注解新增方法。</p>
-<h2 id="生产工具"><a href="#生产工具" class="headerlink" title="生产工具"></a>生产工具</h2><p>将上一步中提到的<code>simplelogger-annotations</code>和<code>simplelogger-aspect</code>这两个模块打包上传到meavn仓库。这样每次编写应用时，只需要导入相应的依赖即可，不需要编写注解类和切面类了，也算是一劳永逸了。开源项目<a href="https://github.com/huntto/SimpleLogger" target="_blank" rel="noopener">SimpleLogger</a>。</p>
+<h2 id="生产工具"><a href="#生产工具" class="headerlink" title="生产工具"></a>生产工具</h2><p>将上一步中提到的<code>simplelogger-annotations</code>和<code>simplelogger-aspect</code>这两个模块打包上传到meavn仓库。这样每次编写应用时，只需要导入相应的依赖即可，不需要编写注解类和切面类了，也算是一劳永逸了。开源项目<a href="https://github.com/huntto/SimpleLogger/tree/f42f8235ac16623e4d2cbd45dbeb885de3c4d2b0" target="_blank" rel="noopener">SimpleLogger</a>。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文只是简单介绍了如何使用AspectJ进行面向切面编程，并没有详细介绍<code>AspectJ</code>的使用方法，如果想要详细了解<code>AspectJ</code>，可移步<a href="https://www.eclipse.org/aspectj/doc/released/progguide/index.html" target="_blank" rel="noopener">官方文档</a>。在平时编写代码时，要更多的注重复用，而不是复制，养成良好的编程习惯，既省时又高效。</p>
 <h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>[1] <a href="https://www.jianshu.com/p/c4c86e75cf83" target="_blank" rel="noopener">利用AspectJ实现Android端非侵入式埋点</a><br>[2] <a href="https://www.jianshu.com/p/aa1112dbebc7" target="_blank" rel="noopener">Android面向切面编程（AOP）</a><br>[3] <a href="https://www.jianshu.com/p/dca3e2c8608a" target="_blank" rel="noopener">安卓AOP三剑客:APT,AspectJ,Javassist</a><br>[4] <a href="https://www.jianshu.com/p/f577aec99e17" target="_blank" rel="noopener">关于android中使用AspectJ</a></p>
 
