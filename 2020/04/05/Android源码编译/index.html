@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="编译Android源码需要经历以下几个步骤：  搭建编译环境 下载源代码 编译源码 刷入真机  有些步骤可能比较耗时，需要耐心等待；如果不出意外，按照本文介绍的步骤可顺利完成Android源码编译和刷写系统。">
+<meta name="keywords" content="Android,源码编译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android源码编译">
+<meta property="og:url" content="http://www.ihuntto.com/2020/04/05/Android源码编译/index.html">
+<meta property="og:site_name" content="且行且记">
+<meta property="og:description" content="编译Android源码需要经历以下几个步骤：  搭建编译环境 下载源代码 编译源码 刷入真机  有些步骤可能比较耗时，需要耐心等待；如果不出意外，按照本文介绍的步骤可顺利完成Android源码编译和刷写系统。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-05T15:09:48.677Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android源码编译">
+<meta name="twitter:description" content="编译Android源码需要经历以下几个步骤：  搭建编译环境 下载源代码 编译源码 刷入真机  有些步骤可能比较耗时，需要耐心等待；如果不出意外，按照本文介绍的步骤可顺利完成Android源码编译和刷写系统。">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.ihuntto.com/2020/04/05/Android源码编译/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android源码编译 | 且行且记</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">且行且记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.ihuntto.com/2020/04/05/Android源码编译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Huntto">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且行且记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android源码编译
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-04-05 22:57:58 / Modified: 23:09:48" itemprop="dateCreated datePublished" datetime="2020-04-05T22:57:58+08:00">2020-04-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>编译Android源码需要经历以下几个步骤：</p>
+<ol>
+<li>搭建编译环境</li>
+<li>下载源代码</li>
+<li>编译源码</li>
+<li>刷入真机</li>
+</ol>
+<p>有些步骤可能比较耗时，需要耐心等待；如果不出意外，按照本文介绍的步骤可顺利完成Android源码编译和刷写系统。</p>
+<a id="more"></a>
+<hr>
+<h2 id="搭建编译环境"><a href="#搭建编译环境" class="headerlink" title="搭建编译环境"></a>搭建编译环境</h2><p>本次使用64位Ubuntu系统进行编译Android系统源码，具体的版本为<strong>Ubuntu 18.04.3 LTS</strong>。</p>
+<p>根据<a href="https://source.android.google.cn/setup/build/initializing" target="_blank" rel="noopener">官方文档</a>介绍，首先需要安装所需的软件包：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc unzip</span><br></pre></td></tr></table></figure>
+<p>其次需要安装OpenJDK：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install openjdk-8-jdk</span><br></pre></td></tr></table></figure>
+<p>然后更新默认的Java版本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo update-alternatives --config java</span><br><span class="line">sudo update-alternatives --config javac</span><br></pre></td></tr></table></figure>
+<p>使用命令<code>java -version</code>查看Java版本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openjdk version "1.8.0_222"</span><br><span class="line">OpenJDK Runtime Environment (build 1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10)</span><br><span class="line">OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)</span><br></pre></td></tr></table></figure>
+<p>验证OpenJDK已经安装成功。</p>
+<p>由于后面的<code>repo</code>命令会用到Python，因此需要安装Python：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python</span><br></pre></td></tr></table></figure>
+<h2 id="下载源代码"><a href="#下载源代码" class="headerlink" title="下载源代码"></a>下载源代码</h2><p>首先下载repo工具：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/bin</span><br><span class="line">export PATH=~/bin:$PATH</span><br><span class="line">curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo -o ~/bin/repo</span><br><span class="line">chmod a+x ~/bin/repo</span><br></pre></td></tr></table></figure>
+<p>由于被墙的原因，这里使用的是清华镜像。</p>
+<p>使用<strong>gedit</strong>编辑<code>~/bin/repo</code>文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gedit ~/bin/repo</span><br></pre></td></tr></table></figure>
+<p>需要将文件里面的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REPO_URL='https://android.googlesource.com/git-repo'</span><br></pre></td></tr></table></figure>
+<p>替换为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/'</span><br></pre></td></tr></table></figure>
+<p>建立工作目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir WORKING_DIRECTORY</span><br><span class="line">cd WORKING_DIRECTORY</span><br></pre></td></tr></table></figure>
+<p><code>WORKING_DIRECTORY</code>为自己喜欢的名字，如<code>Android-8.1.0_r52</code>。</p>
+<p>配置Git工具（如果Git命令运行不成功，使用<code>sudo apt-get install git</code>安装Git工具）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name "Your Name"</span><br><span class="line">git config --global user.email "you@example.com"</span><br></pre></td></tr></table></figure>
+<p><code>Your Name</code>和<a href="mailto:`you@example.com" target="_blank" rel="noopener">`you@example.com</a>`根据自己的真实意愿填写。</p>
+<p>初始化仓库，并指定特定的Android版本(<a href="https://source.android.google.cn/setup/start/build-numbers#source-code-tags-and-builds" target="_blank" rel="noopener">分支列表</a>)：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-8.1.0_r52</span><br></pre></td></tr></table></figure>
+<p>注意分支版本一定要与自己的设备对应上，我使用的是<code>Nexus 5x</code>，目前其最高支持的分支版本是<code>android-8.1.0_r52</code>。</p>
+<p>同步源码树：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo sync -j4</span><br></pre></td></tr></table></figure>
+<p><code>-j4</code>的<strong>4</strong>表示使用4条线程。静静的等待代码同步完成，大概需要一两个小时。</p>
+<blockquote>
+<p>如果Ubuntu安装在虚拟机中，可能需要多尝试几次才能同步成功。</p>
+</blockquote>
+<p>下载完源码后，还需要下载<a href="https://developers.google.cn/android/drivers" target="_blank" rel="noopener">谷歌驱动程序</a>，找到<a href="https://developers.google.cn/android/drivers#bullheadopm7.181205.001" target="_blank" rel="noopener">Nexus 5X binaries for Android 8.1.0 (OPM7.181205.001)</a>，这里需要根据自己的设备和下载的源码版本进行选择。下载完成的压缩文件解压出来是<code>shell</code>脚本，将<code>shell</code>脚本拷贝到<code>WORKING_DIRECTORY</code>目录下并执行，如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./extract-lge-bullhead.sh</span><br><span class="line">./extract-qcom-bullhead.sh</span><br></pre></td></tr></table></figure>
+<p>执行完成后将生产<code>vendor</code>目录。</p>
+<p>至此所需的代码和文件都以准备完成，下面将进入编译环节。</p>
+<h2 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h2><p>源码拉取完成后，在<code>WORKING_DIRECTORY</code>目录下使用 <code>envsetup.sh</code> 脚本初始化环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source build/envsetup.sh</span><br></pre></td></tr></table></figure>
+<p>使用 <code>lunch</code> 选择要编译的目标:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch aosp_arm-eng</span><br></pre></td></tr></table></figure>
+<p>我的真机为Nexus 5X，所以我的目标是：<code>aosp_bullhead-userdebug</code>，具体的机型对应关系查看<a href="https://source.android.google.cn/setup/build/running#selecting-device-build" target="_blank" rel="noopener">选择设备编译系统</a>。</p>
+<p>在进行编译前，先去除所有本地化设置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export LC_ALL=C</span><br></pre></td></tr></table></figure>
+<p>然后执行命令进行编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j4</span><br></pre></td></tr></table></figure>
+<p>漫长的等待后，可能一次编译成功，也有可能会遇见各种错误，这时需要解决问题，进行再次尝试。</p>
+<p>如果遇到如下错误：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Try increasing heap size with java option '-Xmx&lt;size&gt;</span><br></pre></td></tr></table></figure>
+<p>请执行下面命令后再重新执行<code>make</code>命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4g"</span><br><span class="line">./prebuilts/sdk/tools/jack-admin kill-server</span><br><span class="line">./prebuilts/sdk/tools/jack-admin start-server</span><br></pre></td></tr></table></figure>
+<h2 id="刷入真机"><a href="#刷入真机" class="headerlink" title="刷入真机"></a>刷入真机</h2><p>设置<code>ANDROID_PRODUCT_OUT</code>变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export ANDROID_PRODUCT_OUT=WORKING_DIRECTORY/out/target/product/bullhead</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>  注意：<code>WORKING_DIRECTORY</code>需要替换成绝对路径，bullhead是Nexus5X的代号，需要根据自己的机型进行修改。</p>
+</blockquote>
+<p>在自己手机的<strong>开发者选项</strong>中开启<strong>OEM解锁</strong>选项。</p>
+<p>下载最新的<a href="https://developer.android.google.cn/studio/releases/platform-tools?hl=en" target="_blank" rel="noopener">platform-tools</a>，platform-tools里面包含了<code>adb</code>和<code>fastboot</code>等工具。将下载好的platform-tools压缩包解压到合适的目录，并将该目录添加到<code>PATH</code>环境变量中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=PLATFORM_TOOLS_PATH:$PATH</span><br></pre></td></tr></table></figure>
+<p>然后使用USB数据线连接自己的手机，使用如下选项查看是否连接成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb devices -l</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果没有连接成功，检查手机的<strong>USB调试</strong>是否打开。</p>
+</blockquote>
+<p>然后进入bootloader模式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb reboot bootloader</span><br></pre></td></tr></table></figure>
+<p>进入Android设备的开发者选项中将<strong>OEM解锁-允许解锁引导加载程序</strong>开关打开，然后进行OEM解锁：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastboot oem unlock</span><br></pre></td></tr></table></figure>
+<p>使用手机的音量键进行选择，选择<strong>YES</strong>后，使用电源键进行确认。</p>
+<p>刷入镜像：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastboot -w flashall</span><br></pre></td></tr></table></figure>
+<p>如果这个命令允许失败，有两种解决方法：</p>
+<ul>
+<li><p>下载旧版本的platform-tools。只需要将下载链接：<a href="https://dl.google.com/android/repository/platform-tools_r29.0.5-linux.zip" target="_blank" rel="noopener">https://dl.google.com/android/repository/platform-tools_r29.0.5-linux.zip</a> 中的版本号替换为旧版本号即可下载，如：<a href="https://dl.google.com/android/repository/platform-tools_r29.0.2-linux.zip" target="_blank" rel="noopener">https://dl.google.com/android/repository/platform-tools_r29.0.2-linux.zip</a></p>
+</li>
+<li><p>手动刷写各个<code>*.img</code>：</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fastboot erase system -w</span><br><span class="line">fastboot flash boot boot.img</span><br><span class="line">fastboot flash system system.img</span><br><span class="line">fastboot flash vendor vendor.img</span><br><span class="line">fastboot flash userdata userdata.img</span><br><span class="line">...</span><br><span class="line">fastboot reboot</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>至此，整个Android源码编译与系统刷写都介绍完了，希望对您有所帮助。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ol>
+<li><a href="https://source.android.google.cn/setup/build/initializing" target="_blank" rel="noopener">搭建编译环境</a></li>
+<li><a href="https://source.android.google.cn/setup/build/older-versions" target="_blank" rel="noopener">支持旧版本</a></li>
+<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/" target="_blank" rel="noopener">Android 镜像使用帮助</a></li>
+<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/git-repo/" target="_blank" rel="noopener">Git Repo 镜像使用帮助</a></li>
+<li><a href="https://source.android.google.cn/setup/build/downloading" target="_blank" rel="noopener">下载源代码</a></li>
+<li><a href="https://blog.csdn.net/KingWang0628/article/details/80836219" target="_blank" rel="noopener">gzip: stdout: No space left on device</a></li>
+<li><a href="https://developers.google.cn/android/images" target="_blank" rel="noopener">Factory Images for Nexus and Pixel Devices</a></li>
+<li>[自己写的fastboot flashall命令](</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/源码编译/" rel="tag"># 源码编译</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/19/CMake编译Android可执行程序/" rel="next" title="CMake编译Android可执行程序">
+                <i class="fa fa-chevron-left"></i> CMake编译Android可执行程序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Huntto</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建编译环境"><span class="nav-number">1.</span> <span class="nav-text">搭建编译环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载源代码"><span class="nav-number">2.</span> <span class="nav-text">下载源代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译源码"><span class="nav-number">3.</span> <span class="nav-text">编译源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷入真机"><span class="nav-number">4.</span> <span class="nav-text">刷入真机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">5.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huntto</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
